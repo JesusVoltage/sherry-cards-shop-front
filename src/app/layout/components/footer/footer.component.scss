@@ -1,0 +1,28 @@
+.footer { padding: 4rem 0 1.5rem; border-top: 1px solid #dfe5f0; background: #fff; color: #17213a; }
+.footer__main { display: grid; grid-template-columns: 1.2fr 0.8fr 0.8fr 1.2fr; gap: 2rem; padding-bottom: 3rem; }
+.footer__brand-column, .footer__column, .footer__newsletter { display: flex; align-items: flex-start; flex-direction: column; }
+.footer__brand { display: inline-flex; align-items: center; gap: 0.75rem; color: #17213a; font-size: 0.875rem; font-weight: 700; text-decoration: none; }
+.footer__brand-icon { display: grid; width: 2.5rem; aspect-ratio: 1; place-items: center; border: 1px solid #dfe5f0; border-radius: 0.75rem; background: #f5f7fc; color: #1586ac; }
+.footer__brand-column p, .footer__newsletter p { max-width: 20rem; margin: 1rem 0 0; color: #69758b; font-size: 0.8125rem; line-height: 1.7; }
+.footer__socials { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1.5rem; color: #69758b; font-size: 0.75rem; }
+.footer__column h2, .footer__newsletter h2 { margin: 0 0 1rem; color: #17213a; font-size: 0.8125rem; font-weight: 700; }
+.footer__column a { margin-bottom: 0.75rem; color: #69758b; font-size: 0.75rem; text-decoration: none; }
+.footer__column a:hover, .footer__bottom a:hover { color: #4a6af3; }
+.footer__coming-soon { margin-top: 1.25rem; padding: 0.4rem 0.7rem; border-radius: 999px; background: #eff3ff; color: #405ac4; font-size: 0.7rem; font-weight: 700; }
+.footer__bottom { display: flex; min-height: 3.5rem; align-items: center; justify-content: space-between; gap: 1rem; border-top: 1px solid #e8edf5; color: #69758b; font-size: 0.6875rem; }
+.footer__bottom a { display: inline-flex; align-items: center; gap: 0.25rem; color: #40506b; text-decoration: none; }
+.footer__status { display: inline-flex; align-items: center; gap: 0.5rem; }
+.footer__status i { width: 0.4rem; aspect-ratio: 1; border-radius: 50%; background: #35a86e; }
+
+@media (max-width: 58rem) {
+  .footer__main { grid-template-columns: 1fr 1fr 1fr; }
+  .footer__newsletter { grid-column: 1 / -1; }
+}
+
+@media (max-width: 40rem) {
+  .footer { padding-top: 3rem; }
+  .footer__main { grid-template-columns: 1fr 1fr; gap: 2rem 1rem; }
+  .footer__brand-column, .footer__newsletter { grid-column: 1 / -1; }
+  .footer__bottom { flex-wrap: wrap; justify-content: flex-start; padding-top: 1rem; }
+  .footer__bottom a { margin-left: auto; }
+}

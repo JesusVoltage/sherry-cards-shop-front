@@ -1,0 +1,45 @@
+<header class="navbar">
+  <div class="navbar__inner container-shell">
+    <a class="brand" href="#top" aria-label="Sherry Card Shop, inicio" (click)="closeMenu()">
+      <span class="brand__mark" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span class="brand__name">Sherry Card Shop</span>
+    </a>
+
+    <div class="navbar__search">
+      <svg lucideSearch class="navbar__search-icon" [size]="17" aria-hidden="true"></svg>
+      <input type="search" aria-label="Buscar" placeholder="Buscar en Sherry Card Shop" />
+      <kbd>/</kbd>
+    </div>
+
+    <nav id="mobile-navigation" class="navbar__links" [class.navbar__links--open]="menuOpen()" aria-label="Navegación principal">
+      <a href="#top" (click)="closeMenu()">Inicio</a>
+      <a href="#novedades" (click)="closeMenu()">Novedades</a>
+      <a href="#categorias" (click)="closeMenu()">Categorías</a>
+      <a href="#footer" (click)="closeMenu()">Contacto</a>
+    </nav>
+
+    <div class="navbar__actions">
+      <button class="icon-action" type="button" disabled aria-label="Cuenta próximamente" title="Próximamente">
+        <svg lucideUserRound [size]="19" aria-hidden="true"></svg>
+      </button>
+      <span class="navbar__action-divider" aria-hidden="true"></span>
+      <button class="icon-action icon-action--bag" type="button" disabled aria-label="Carrito próximamente" title="Próximamente">
+        <svg lucideShoppingBag [size]="19" aria-hidden="true"></svg>
+      </button>
+      <button
+        class="icon-action navbar__menu-toggle"
+        type="button"
+        [attr.aria-expanded]="menuOpen()"
+        aria-controls="mobile-navigation"
+        [attr.aria-label]="menuOpen() ? 'Cerrar navegación' : 'Abrir navegación'"
+        (click)="toggleMenu()"
+      >
+        @if (menuOpen()) {
+          <svg lucideX [size]="20" aria-hidden="true"></svg>
+        } @else {
+          <svg lucideMenu [size]="20" aria-hidden="true"></svg>
+        }
+      </button>
+    </div>
+  </div>
+</header>

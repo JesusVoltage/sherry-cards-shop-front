@@ -3,40 +3,56 @@
     <div class="container-shell">
       <div class="section-heading novelties-heading">
         <div>
-          <span class="eyebrow">Próximamente · Sherry Card Shop</span>
+          <span class="eyebrow">Lo último · Sherry Card Shop</span>
           <h1 id="novelties-title">Novedades<span>.</span></h1>
         </div>
-        <p>Un espacio para nuevos lanzamientos y colecciones. Estamos preparando lo que viene.</p>
+        <p>Descubre las últimas novedades y lanzamientos para tu colección.</p>
       </div>
 
-      <div class="arrival-grid">
-        <article class="arrival arrival--blue">
-          <div class="arrival__copy">
-            <span class="arrival__eyebrow"><i></i> POKÉMON TCG</span>
-            <h2>Nuevas aventuras<br />están en camino.</h2>
-            <p>Las próximas novedades aparecerán aquí.</p>
-            <span class="arrival__status">Novedades próximamente</span>
-          </div>
-          <div class="arrival-art arrival-art--blue" aria-hidden="true">
-            <span class="arrival-art__card arrival-art__card--back"></span>
-            <span class="arrival-art__card arrival-art__card--middle"></span>
-            <span class="arrival-art__card arrival-art__card--front"><i></i><b>SC</b></span>
-          </div>
-        </article>
-
-        <article class="arrival arrival--sky">
-          <div class="arrival__copy">
-            <span class="arrival__eyebrow"><i></i> COLECCIONISMO</span>
-            <h2>Un universo<br />por descubrir.</h2>
-            <p>Muy pronto, más noticias para tu colección.</p>
-            <span class="arrival__status">En preparación</span>
-          </div>
-          <div class="arrival-art arrival-art--sky" aria-hidden="true">
-            <span class="arrival-art__orbit"></span>
-            <span class="arrival-art__card arrival-art__card--front"><i></i><b>SC</b></span>
-          </div>
-        </article>
-      </div>
+      @if (noveltiesLoading()) {
+        <div class="arrival-grid" aria-label="Cargando novedades" aria-busy="true">
+          @for (placeholder of [1, 2]; track placeholder) {
+            <div class="arrival-skeleton" aria-hidden="true"></div>
+          }
+        </div>
+      } @else if (noveltiesLoadError()) {
+        <div class="novelties-state" role="alert">
+          <p>No se pudieron cargar las novedades en este momento.</p>
+          <button class="retry-button" type="button" (click)="loadNovelties()">Reintentar</button>
+        </div>
+      } @else if (novelties().length === 0) {
+        <p class="novelties-state">Todavía no hay novedades disponibles.</p>
+      } @else {
+        <div class="arrival-grid">
+          @for (novelty of novelties(); track novelty.id; let even = $even) {
+            <article class="arrival" [class.arrival--blue]="even" [class.arrival--sky]="!even">
+              <div class="arrival__copy">
+                <span class="arrival__eyebrow"><i aria-hidden="true"></i> {{ novelty.categoryName }}</span>
+                <h2>{{ novelty.title }}</h2>
+                <p>{{ novelty.description }}</p>
+              </div>
+              @if (novelty.imageUrl) {
+                <img
+                  class="arrival__image"
+                  [src]="novelty.imageUrl"
+                  [alt]="novelty.title"
+                  loading="lazy"
+                />
+              } @else {
+                <div class="arrival-art" aria-hidden="true">
+                  @if (even) {
+                    <span class="arrival-art__card arrival-art__card--back"></span>
+                    <span class="arrival-art__card arrival-art__card--middle"></span>
+                  } @else {
+                    <span class="arrival-art__orbit"></span>
+                  }
+                  <span class="arrival-art__card arrival-art__card--front"><i></i><b>SC</b></span>
+                </div>
+              }
+            </article>
+          }
+        </div>
+      }
     </div>
   </section>
 

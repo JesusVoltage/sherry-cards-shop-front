@@ -79,12 +79,12 @@
 
 .arrival--blue { background: linear-gradient(118deg, #dce8ff, #c6dafb 58%, #d9f2fa); }
 .arrival--sky { background: linear-gradient(118deg, #e3edff, #d3e8f8 58%, #e5f5fa); }
-.arrival__copy { position: relative; z-index: 2; width: 62%; }
-.arrival__eyebrow { display: inline-flex; align-items: center; gap: 0.5rem; color: #43547a; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em; }
+.arrival__copy { position: relative; z-index: 2; width: 62%; overflow-wrap: anywhere; }
+.arrival__eyebrow { display: inline-flex; align-items: center; gap: 0.5rem; color: #43547a; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
 .arrival__eyebrow i { width: 0.45rem; aspect-ratio: 1; border-radius: 50%; background: var(--home-primary); box-shadow: 0 0 0 0.25rem rgb(74 106 243 / 0.12); }
 .arrival__copy h2 { margin: 1rem 0 0; color: #17213a; font-size: 1.65rem; font-weight: 700; line-height: 1.16; }
 .arrival__copy p { max-width: 19rem; margin: 0.65rem 0 0; color: #53627d; font-size: 0.8125rem; line-height: 1.6; }
-.arrival__status { display: inline-flex; margin-top: 1.25rem; padding: 0.4rem 0.7rem; border: 1px solid rgb(74 106 243 / 0.18); border-radius: 999px; background: rgb(255 255 255 / 0.5); color: #405ac4; font-size: 0.6875rem; font-weight: 600; }
+.arrival__image { position: absolute; top: 50%; right: 1rem; width: 30%; height: 12rem; object-fit: contain; transform: translateY(-50%); }
 
 .arrival-art { position: absolute; top: 50%; right: 9%; display: grid; width: 10rem; height: 12rem; place-items: center; transform: translateY(-50%); }
 .arrival-art { z-index: 1; pointer-events: none; }
@@ -246,6 +246,7 @@
   line-height: 1.4;
 }
 
+.arrival-skeleton,
 .category-skeleton {
   min-height: 12rem;
   border: 1px solid var(--home-border);
@@ -255,6 +256,11 @@
   animation: skeleton-shimmer 1.25s ease-in-out infinite;
 }
 
+.arrival-skeleton {
+  min-height: 17rem;
+}
+
+.novelties-state,
 .categories-state {
   display: flex;
   min-height: 10rem;
@@ -270,6 +276,7 @@
   text-align: center;
 }
 
+.novelties-state p,
 .categories-state p {
   margin: 0;
 }
@@ -311,6 +318,7 @@
 
   .arrival-grid { grid-template-columns: 1fr; }
   .arrival { min-height: 15rem; padding: 1.25rem; }
+  .arrival-skeleton { min-height: 15rem; }
   .arrival__copy { width: 58%; }
   .arrival-art { right: 0; transform: translateY(-50%) scale(0.46); transform-origin: right center; }
   .arrival__copy h2 { font-size: 1.35rem; }
@@ -333,6 +341,7 @@
 @media (prefers-reduced-motion: reduce) {
   .category,
   .category::after,
+  .arrival-skeleton,
   .category-skeleton {
     animation: none;
     transition: none;

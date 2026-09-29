@@ -6,10 +6,3 @@ export interface Category {
   imageUrl: string | null;
   displayOrder: number;
 }
-
-export interface ApiResponse<T> {
-  success: boolean;
-  message: string;
-  data: T;
-  timestamp: string;
-}

@@ -37,3 +37,6 @@ fieldset .btn { margin-top: 0.4rem; }
 @media (max-width: 30rem) {
   .form-row { grid-template-columns: 1fr; }
 }
+
+.auth-page--full { min-height: 100vh; place-items: center; }
+.auth-logo { display: block; width: 2.75rem; margin-bottom: 1.25rem; color: var(--brand-blue); }

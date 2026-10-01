@@ -4,8 +4,9 @@ import { PLATFORM_ID } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { User } from '../models/user.model';
 import { AuthService } from './auth.service';
+import { environment } from '../../../../environments/environment';
 
-const url = 'https://sherry-cards-shop-api-production.up.railway.app/api/auth';
+const url = `${environment.apiBaseUrl}/api/auth`;
 const user: User = {
   id: 7, username: 'coleccionista', email: 'cards@example.com', nombre: 'Ana',
   apellidos: null, role: 'USER', status: 'ACTIVE', emailVerifiedAt: null, lastAccessAt: null,

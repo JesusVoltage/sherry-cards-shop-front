@@ -7,8 +7,9 @@ import { AuthService } from '../auth/services/auth.service';
 import { AccountLayoutComponent } from './layout/account-layout.component';
 import { AccountAddressesComponent } from './pages/account-addresses/account-addresses.component';
 import { AccountDetailsComponent } from './pages/account-details/account-details.component';
+import { environment } from '../../../environments/environment';
 
-const api = 'https://sherry-cards-shop-api-production.up.railway.app/api';
+const api = `${environment.apiBaseUrl}/api`;
 const user = {
   id: 1, username: 'ana_cards', email: 'ana@example.com', nombre: 'Ana', apellidos: 'López',
   role: 'CLIENTE', status: 'ACTIVO', hasPassword: true, googleLinked: false

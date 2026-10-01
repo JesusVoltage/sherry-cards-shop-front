@@ -4,9 +4,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ApiResponse } from '../../models/api-response.model';
 import { Novelty } from '../../models/novelty.model';
 import { HomePageComponent } from './home-page.component';
+import { environment } from '../../../../../environments/environment';
 
-const NOVELTIES_API_URL = 'https://sherry-cards-shop-api-production.up.railway.app/api/novedades';
-const CATEGORIES_API_URL = 'https://sherry-cards-shop-api-production.up.railway.app/api/categories';
+const NOVELTIES_API_URL = `${environment.apiBaseUrl}/api/novedades`;
+const CATEGORIES_API_URL = `${environment.apiBaseUrl}/api/categories`;
 const novelty: Novelty = {
   id: 1,
   title: 'EB-05 de One Piece',

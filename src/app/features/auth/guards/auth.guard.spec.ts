@@ -4,6 +4,7 @@ import { TestBed } from '@angular/core/testing';
 import { ActivatedRouteSnapshot, provideRouter, Router, RouterStateSnapshot } from '@angular/router';
 import { Observable } from 'rxjs';
 import { AuthGuard } from './auth.guard';
+import { environment } from '../../../../environments/environment';
 
 describe('AuthGuard', () => {
   beforeEach(() => TestBed.configureTestingModule({ providers: [
@@ -18,7 +19,7 @@ describe('AuthGuard', () => {
     guard.subscribe(result);
     expect(result).not.toHaveBeenCalled();
     const http = TestBed.inject(HttpTestingController);
-    const base = 'https://sherry-cards-shop-api-production.up.railway.app/api/auth';
+    const base = `${environment.apiBaseUrl}/api/auth`;
     http.expectOne(`${base}/me`).flush({}, { status: 401, statusText: 'Unauthorized' });
     http.expectOne(`${base}/refresh`).flush({}, { status: 401, statusText: 'Unauthorized' });
     const expected = TestBed.inject(Router).createUrlTree(['/login'], { queryParams: { returnUrl: '/cuenta' } });
@@ -33,7 +34,7 @@ describe('AuthGuard', () => {
     )) as Observable<unknown>;
     guard.subscribe(result);
     const http = TestBed.inject(HttpTestingController);
-    http.expectOne('https://sherry-cards-shop-api-production.up.railway.app/api/auth/me').flush({
+    http.expectOne(`${environment.apiBaseUrl}/api/auth/me`).flush({
       success: true, data: { id: 1, username: 'ana', email: 'ana@example.com', nombre: 'Ana', role: 'USER', status: 'ACTIVE' }
     });
     expect(result).toHaveBeenCalledWith(true);

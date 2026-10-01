@@ -1,0 +1,17 @@
+<header class="closed-header">
+  <a class="brand" routerLink="/" aria-label="Sherry Card Shop, inicio">
+    <scw-brand-logo class="brand__mark" />
+    <span class="brand__name">Sherry Card Shop</span>
+  </a>
+</header>
+<div class="closed-content">
+  <router-outlet />
+</div>
+<footer class="closed-footer">
+  <nav aria-label="Información legal">
+    <a routerLink="/aviso-legal">Aviso legal</a>
+    <a routerLink="/privacidad">Privacidad</a>
+    <a routerLink="/cookies">Cookies</a>
+  </nav>
+  <p>© {{ year }} Sherry Card Shop · Jerez de la Frontera</p>
+</footer>

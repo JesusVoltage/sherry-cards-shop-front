@@ -2,6 +2,7 @@ import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { authCredentialsInterceptor } from './auth-credentials.interceptor';
+import { environment } from '../../../../environments/environment';
 
 describe('authCredentialsInterceptor', () => {
   beforeEach(() => TestBed.configureTestingModule({ providers: [
@@ -11,7 +12,7 @@ describe('authCredentialsInterceptor', () => {
   it('adds cookies and disables transfer caching only for the configured session API', () => {
     const http = TestBed.inject(HttpClient);
     const controller = TestBed.inject(HttpTestingController);
-    const base = 'https://sherry-cards-shop-api-production.up.railway.app';
+    const base = `${environment.apiBaseUrl}`;
     const credentialed = [`${base}/api/auth/me`, `${base}/api/account/addresses`];
     const urls = [...credentialed, `${base}/api/categories`, 'https://example.com/api/auth/me'];
     for (const url of urls) {

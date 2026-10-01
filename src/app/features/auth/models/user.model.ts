@@ -1,3 +1,5 @@
+export const ADMIN_ROLE = 'ADMIN';
+
 export interface User {
   id: number;
   username: string;

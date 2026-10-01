@@ -6,6 +6,11 @@ export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL', {
   factory: () => environment.apiBaseUrl
 });
 
+export const SITE_CLOSED = new InjectionToken<boolean>('SITE_CLOSED', {
+  providedIn: 'root',
+  factory: () => environment.siteClosed
+});
+
 export const GOOGLE_CLIENT_ID = new InjectionToken<string>('GOOGLE_CLIENT_ID', {
   providedIn: 'root',
   factory: () => environment.googleClientId

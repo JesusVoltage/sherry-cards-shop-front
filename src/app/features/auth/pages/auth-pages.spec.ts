@@ -6,8 +6,9 @@ import { AuthService } from '../services/auth.service';
 import { safeReturnUrl } from '../utils/auth-validators';
 import { LoginPageComponent } from './login-page/login-page.component';
 import { RegisterPageComponent } from './register-page/register-page.component';
+import { environment } from '../../../../environments/environment';
 
-const base = 'https://sherry-cards-shop-api-production.up.railway.app/api/auth';
+const base = `${environment.apiBaseUrl}/api/auth`;
 const user = { id: 1, username: 'ana_cards', email: 'ana@example.com', nombre: 'Ana', role: 'USER', status: 'ACTIVE' };
 const ok = { success: true, message: 'OK', data: null, timestamp: '2026-09-30T10:00:00Z' };
 

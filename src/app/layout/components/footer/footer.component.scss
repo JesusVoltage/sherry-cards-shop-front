@@ -108,10 +108,7 @@
   text-decoration: none;
 }
 
-.footer__mark { position: relative; display: block; width: 2rem; height: 2.25rem; }
-.footer__mark i { position: absolute; top: 0.25rem; left: 0.4rem; width: 1.15rem; height: 1.65rem; border: 1px solid #9cc7ee; border-radius: 0.3rem; background: #f0f7fd; transform: rotate(-15deg); }
-.footer__mark i:nth-child(2) { border-color: #a89be6; background: #f5f2fd; transform: rotate(-2deg) translate(0.15rem, -0.05rem); }
-.footer__mark i:nth-child(3) { border-color: var(--azulina); background: linear-gradient(145deg, var(--azulina), #9a8ae3); transform: rotate(11deg) translate(0.3rem, 0.02rem); }
+.footer__mark { width: 2.25rem; color: var(--brand-blue); }
 
 .footer__brand-column p { max-width: 17rem; margin: 1rem 0 0; color: var(--muted); font-size: 0.8125rem; line-height: 1.7; }
 

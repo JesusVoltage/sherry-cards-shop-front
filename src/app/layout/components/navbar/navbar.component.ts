@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../../features/auth/services/auth.service';
+import { BrandLogoComponent } from '../../../ui/components/brand-logo/brand-logo.component';
 import {
   LucideMenu,
   LucideSearch,
@@ -12,7 +13,7 @@ import {
 @Component({
   selector: 'scw-navbar',
   standalone: true,
-  imports: [RouterLink, LucideMenu, LucideSearch, LucideShoppingBag, LucideUserRound, LucideX],
+  imports: [RouterLink, BrandLogoComponent, LucideMenu, LucideSearch, LucideShoppingBag, LucideUserRound, LucideX],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss',
 })

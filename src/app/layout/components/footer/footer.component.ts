@@ -3,11 +3,12 @@ import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { LucideArrowUp, LucideSparkles } from '@lucide/angular';
 import { LEGAL_INFO } from '../../../core/config/legal.config';
+import { BrandLogoComponent } from '../../../ui/components/brand-logo/brand-logo.component';
 
 @Component({
   selector: 'scw-footer',
   standalone: true,
-  imports: [RouterLink, LucideArrowUp, LucideSparkles],
+  imports: [RouterLink, BrandLogoComponent, LucideArrowUp, LucideSparkles],
   templateUrl: './footer.component.html',
   styleUrl: './footer.component.scss',
 })

@@ -49,7 +49,7 @@
           <input id="register-password" type="password" formControlName="password" autocomplete="new-password" required
             [attr.aria-invalid]="!!errorFor(form.controls.password, 'La contraseña')"
             aria-describedby="password-hint register-password-error" />
-          <p class="field-hint" id="password-hint">Utiliza al menos 8 caracteres.</p>
+          <p class="field-hint" id="password-hint">Entre 8 y 72 caracteres.</p>
           @if (errorFor(form.controls.password, 'La contraseña'); as message) {
             <p class="field-error" id="register-password-error">{{ message }}</p>
           }
@@ -70,6 +70,10 @@
         </button>
       </fieldset>
     </form>
+    @if (googleEnabled) {
+      <p class="auth-divider"><span>o</span></p>
+      <scw-google-sign-in-button text="signup_with" (credential)="googleSignUp($event)" />
+    }
     <p class="auth-switch">¿Ya tienes cuenta? <a routerLink="/login" [queryParams]="{ returnUrl }">Iniciar sesión</a></p>
   </section>
 </main>

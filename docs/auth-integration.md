@@ -1,11 +1,18 @@
 # Autenticación
 
-La aplicación ofrece `/registro`, `/login` y `/cuenta` (protegida por `AuthGuard`).
-El backend todavía debe implementar la autenticación. No hay usuarios ni respuestas
-simuladas en la aplicación; las pruebas usan `HttpTestingController`.
+La aplicación ofrece `/registro`, `/login` y `/cuenta` (protegida por `AuthGuard`), con
+login por correo y contraseña y con Google. La API documenta su lado en
+`docs/autenticacion.md` del repositorio `sherry-cards-shop-api`. Las pruebas usan
+`HttpTestingController`.
 
-La URL se configura mediante `API_BASE_URL` en `src/app/core/config/api.config.ts`.
-Su valor predeterminado es `https://sherry-cards-shop-api-production.up.railway.app`.
+## Configuración
+
+`src/environments/environment.ts` (producción y tests) y `environment.development.ts`
+(`ng serve`) definen:
+
+- `apiBaseUrl`: Railway en producción, `http://localhost:8080` en desarrollo. Lo exponen
+  los tokens `API_BASE_URL` y lo usan también categorías y novedades.
+- `googleClientId`: client ID OAuth de Google (no es secreto). Vacío oculta el botón.
 
 ## Contrato esperado
 
@@ -19,6 +26,7 @@ Todas las respuestas satisfactorias usan `ApiResponse<T>`:
 | --- | --- | --- |
 | `POST /api/auth/register` | `username`, `email`, `nombre`, `apellidos` si se indica, `password` | `ApiResponse<unknown>` |
 | `POST /api/auth/login` | `email`, `password` | `ApiResponse<unknown>`, seguido de `/me` |
+| `POST /api/auth/google` | `credential` (ID token de Google) | `ApiResponse<unknown>`, seguido de `/me` |
 | `POST /api/auth/logout` | `{}` | `ApiResponse<unknown>` |
 | `POST /api/auth/refresh` | `{}` | `ApiResponse<unknown>`, seguido de `/me` |
 | `GET /api/auth/me` | Sin cuerpo | `ApiResponse<User>` |
@@ -48,9 +56,19 @@ La interfaz muestra un mensaje en español junto al campo correspondiente. Si un
 Los errores de red, validación, credenciales, autorización, servicio no disponible y
 límite de intentos también tienen mensajes en español.
 
+## Google
+
+`GoogleSignInButtonComponent` carga Google Identity Services
+(`https://accounts.google.com/gsi/client`) solo en el navegador y pinta el botón oficial en
+modo popup. El ID token se envía a `/api/auth/google`; la API valida firma, audiencia y email
+verificado, y crea la cuenta o la vincula con la que tenga el mismo correo. Desde registro,
+Google inicia sesión directamente. Al cerrar sesión se desactiva la selección automática de
+cuenta. En Google Cloud, el client ID debe tener como orígenes de JavaScript autorizados
+`http://localhost:4200` y cada dominio público del frontend.
+
 ## Sesión y cookies
 
-- Las cinco rutas usan `withCredentials: true` y `transferCache: false`.
+- Las seis rutas usan `withCredentials: true` y `transferCache: false`.
 - El interceptor se limita a `/api/auth/` de la API configurada. Las rutas públicas
   de categorías y novedades conservan sus peticiones sin credenciales.
 - No se guardan contraseñas, JWT ni refresh tokens en almacenamiento web. El único
@@ -75,6 +93,5 @@ OPTIONS para JSON y validar los orígenes de las operaciones que cambian estado 
 parte de su protección CSRF. Las restricciones del navegador a cookies de terceros
 pueden requerir desplegar frontend y API bajo un mismo sitio.
 
-No se han enviado registros o inicios de sesión a producción para verificar esta
-interfaz. Cuando estén disponibles los endpoints, validar con el contrato anterior,
-las cookies y el dominio real de Vercel.
+Con dominio propio (`tudominio.es` en Vercel y `api.tudominio.es` en Railway) ambos
+están en el mismo sitio y basta `SameSite=Lax`, el valor por defecto de la API.

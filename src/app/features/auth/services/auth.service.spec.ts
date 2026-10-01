@@ -60,6 +60,19 @@ describe('AuthService', () => {
     expect(auth.isAuthenticated()).toBeTrue();
   });
 
+  it('exchanges a Google credential for a session and confirms it with /me', () => {
+    const received = jasmine.createSpy('user');
+    auth.loginWithGoogle('google-id-token').subscribe(received);
+    const google = http.expectOne(`${url}/google`);
+    expect(google.request.method).toBe('POST');
+    expect(google.request.withCredentials).toBeTrue();
+    expect(google.request.body).toEqual({ credential: 'google-id-token' });
+    google.flush(response(user));
+    http.expectOne(`${url}/me`).flush(response(user));
+    expect(received).toHaveBeenCalledWith(user);
+    expect(auth.isAuthenticated()).toBeTrue();
+  });
+
   it('shares session recovery between the app and guard and reuses the recovered user', () => {
     const first = jasmine.createSpy('first');
     const second = jasmine.createSpy('second');

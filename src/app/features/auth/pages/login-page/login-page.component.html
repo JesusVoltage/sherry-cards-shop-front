@@ -39,6 +39,10 @@
         </button>
       </fieldset>
     </form>
+    @if (googleEnabled) {
+      <p class="auth-divider"><span>o</span></p>
+      <scw-google-sign-in-button text="signin_with" (credential)="googleLogin($event)" />
+    }
     <p class="auth-switch">¿Todavía no tienes cuenta? <a routerLink="/registro" [queryParams]="{ returnUrl }">Crear cuenta</a></p>
   </section>
 </main>

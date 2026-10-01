@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { TimeoutError } from 'rxjs';
 
-export type AuthOperation = 'login' | 'register' | 'session' | 'logout';
+export type AuthOperation = 'login' | 'google' | 'register' | 'session' | 'logout';
 export type ConflictField = 'username' | 'email';
 
 export class AuthResponseError extends Error {}
@@ -36,12 +36,18 @@ export function authErrorMessage(error: unknown, operation: AuthOperation): stri
       case 0: return 'No se pudo conectar con el servidor. Comprueba tu conexión e inténtalo de nuevo.';
       case 400:
       case 422: return 'Revisa los datos introducidos e inténtalo de nuevo.';
-      case 401: return operation === 'login'
-        ? 'El correo electrónico o la contraseña no son correctos.'
-        : 'Tu sesión ha caducado. Vuelve a iniciar sesión.';
+      case 401:
+        if (operation === 'login') return 'El correo electrónico o la contraseña no son correctos.';
+        if (operation === 'google') return 'No se pudo verificar tu cuenta de Google. Inténtalo de nuevo.';
+        return 'Tu sesión ha caducado. Vuelve a iniciar sesión.';
       case 403: return 'No se ha autorizado el acceso a esta cuenta. Contacta con la tienda si necesitas ayuda.';
       case 404:
-      case 501: return 'El servicio de autenticación todavía no está disponible. Inténtalo más tarde.';
+      case 501: return operation === 'google'
+        ? 'El acceso con Google todavía no está disponible. Usa tu correo y contraseña.'
+        : 'El servicio de autenticación todavía no está disponible. Inténtalo más tarde.';
+      case 503:
+        if (operation === 'google') return 'El acceso con Google todavía no está disponible. Usa tu correo y contraseña.';
+        break;
       case 409: return 'El nombre de usuario o el correo electrónico ya están registrados.';
       case 429: return 'Has realizado demasiados intentos. Espera unos minutos antes de volver a intentarlo.';
     }
@@ -50,6 +56,7 @@ export function authErrorMessage(error: unknown, operation: AuthOperation): stri
   switch (operation) {
     case 'register': return 'No se pudo crear tu cuenta. Inténtalo de nuevo más tarde.';
     case 'login': return 'No se pudo iniciar sesión. Inténtalo de nuevo más tarde.';
+    case 'google': return 'No se pudo iniciar sesión con Google. Inténtalo de nuevo más tarde.';
     case 'logout': return 'No se pudo cerrar la sesión. Vuelve a intentarlo.';
     case 'session': return 'No se pudo comprobar tu sesión. Inténtalo de nuevo más tarde.';
   }

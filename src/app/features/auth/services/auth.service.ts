@@ -9,12 +9,14 @@ import { API_BASE_URL } from '../../../core/config/api.config';
 import { ApiResponse } from '../../../core/models/api-response.model';
 import { LoginRequest, RegisterRequest, User } from '../models/user.model';
 import { authErrorMessage, AuthResponseError } from '../utils/auth-errors';
+import { GoogleIdentityService } from './google-identity.service';
 
 type SessionStatus = 'idle' | 'loading' | 'authenticated' | 'anonymous' | 'error';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly http = inject(HttpClient);
+  private readonly googleIdentity = inject(GoogleIdentityService);
   private readonly browser = isPlatformBrowser(inject(PLATFORM_ID));
   private readonly url = `${inject(API_BASE_URL)}/api/auth`;
   private readonly userState = signal<User | null>(null);
@@ -43,14 +45,13 @@ export class AuthService {
   }
 
   login(request: LoginRequest): Observable<User> {
-    this.cancelRecovery.next();
-    this.setUser(null);
     const body: LoginRequest = { email: request.email.trim(), password: request.password };
-    return this.post('login', body).pipe(
-      // /me is the canonical source of the current user, independent of the login response body.
-      switchMap(() => this.getMe()),
-      tap((user) => this.setUser(user))
-    );
+    return this.startSession('login', body);
+  }
+
+  /** `credential` is the Google ID token; the API verifies it and creates or links the account. */
+  loginWithGoogle(credential: string): Observable<User> {
+    return this.startSession('google', { credential });
   }
 
   restoreSession(force = false): Observable<User | null> {
@@ -100,12 +101,25 @@ export class AuthService {
     this.cancelRecovery.next();
     this.logoutRequest = this.post('logout', {}).pipe(
       catchError((error: unknown) => this.unauthorized(error) ? of(null) : throwError(() => error)),
-      tap(() => this.setUser(null)),
+      tap(() => {
+        this.setUser(null);
+        if (this.browser) this.googleIdentity.disableAutoSelect();
+      }),
       map(() => undefined),
       finalize(() => { this.logoutRequest = undefined; }),
       shareReplay({ bufferSize: 1, refCount: false })
     );
     return this.logoutRequest;
+  }
+
+  private startSession(path: 'login' | 'google', body: object): Observable<User> {
+    this.cancelRecovery.next();
+    this.setUser(null);
+    return this.post(path, body).pipe(
+      // /me is the canonical source of the current user, independent of the login response body.
+      switchMap(() => this.getMe()),
+      tap((user) => this.setUser(user))
+    );
   }
 
   private getMe(): Observable<User> {

@@ -29,6 +29,8 @@ fieldset .btn { margin-top: 0.4rem; }
 .form-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
 .auth-divider { display: flex; align-items: center; gap: 0.75rem; margin: 1.25rem 0; color: var(--muted); font-size: 0.75rem; }
 .auth-divider::before, .auth-divider::after { content: ''; flex: 1; border-top: 1px solid var(--line); }
+.legal-note { margin: 1rem 0 0; color: var(--muted); font-size: 0.75rem; line-height: 1.6; text-align: center; }
+.legal-note a { color: var(--azulina-strong); }
 .auth-switch { margin: 1.5rem 0 0; color: var(--muted); text-align: center; font-size: 0.8125rem; }
 .auth-switch a { color: var(--azulina-strong); font-weight: 600; text-decoration-color: var(--azulina-tint); text-decoration-thickness: 2px; text-underline-offset: 0.2em; }
 

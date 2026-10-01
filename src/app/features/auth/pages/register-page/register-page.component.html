@@ -70,6 +70,10 @@
         </button>
       </fieldset>
     </form>
+    <p class="legal-note">
+      Al crear tu cuenta aceptas las <a routerLink="/condiciones">condiciones de venta</a> y confirmas que has leído la
+      <a routerLink="/privacidad">política de privacidad</a>.
+    </p>
     @if (googleEnabled) {
       <p class="auth-divider"><span>o</span></p>
       <scw-google-sign-in-button text="signup_with" (credential)="googleSignUp($event)" />

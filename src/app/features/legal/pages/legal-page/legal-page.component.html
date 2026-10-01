@@ -1,0 +1,121 @@
+<main class="legal">
+  <div class="legal__inner">
+    <nav class="legal__nav" aria-label="Información legal">
+      @for (link of links; track link.path) {
+        <a [routerLink]="link.path" routerLinkActive="is-active">{{ link.label }}</a>
+      }
+    </nav>
+
+    <article class="legal__doc">
+      @switch (page()) {
+        @case ('aviso-legal') {
+          <h1>Aviso legal</h1>
+          <p class="legal__updated">Última actualización: {{ info.lastUpdated }}</p>
+
+          <h2>Titular</h2>
+          <p>En cumplimiento del artículo 10 de la Ley 34/2002 de Servicios de la Sociedad de la Información (LSSI), te informamos de que {{ info.website }} pertenece a:</p>
+          <ul>
+            <li><strong>Titular:</strong> {{ info.owner }}</li>
+            <li><strong>NIF:</strong> {{ info.taxId }}</li>
+            <li><strong>Domicilio:</strong> {{ info.address }}</li>
+            <li><strong>Correo electrónico:</strong> {{ info.email }}</li>
+          </ul>
+
+          <h2>Uso del sitio</h2>
+          <p>Al navegar por este sitio aceptas usarlo de forma lícita, sin dañar su funcionamiento ni el de otros usuarios. Podemos modificar sus contenidos y estas condiciones en cualquier momento.</p>
+
+          <h2>Propiedad intelectual y marcas</h2>
+          <p>Los textos, diseño y logotipo de {{ info.brand }} son de su titular. Pokémon, One Piece, Magic: The Gathering, Disney Lorcana, Yu-Gi-Oh! y el resto de marcas e imágenes de producto pertenecen a sus respectivos propietarios. {{ info.brand }} es una tienda independiente y no está afiliada a ellos.</p>
+
+          <h2>Responsabilidad</h2>
+          <p>Trabajamos para que la información sea correcta y esté actualizada, pero no podemos garantizar la ausencia total de errores ni interrupciones del servicio. No respondemos del contenido de sitios externos a los que se enlace.</p>
+
+          <h2>Legislación aplicable</h2>
+          <p>Estas condiciones se rigen por la legislación española. Si eres consumidor, serán competentes los juzgados de tu domicilio.</p>
+        }
+
+        @case ('privacidad') {
+          <h1>Política de privacidad</h1>
+          <p class="legal__updated">Última actualización: {{ info.lastUpdated }}</p>
+
+          <h2>Responsable</h2>
+          <p>{{ info.owner }} (NIF {{ info.taxId }}), {{ info.address }}. Contacto: {{ info.email }}.</p>
+
+          <h2>Qué datos tratamos</h2>
+          <ul>
+            <li><strong>Cuenta:</strong> nombre de usuario, nombre, apellidos, correo electrónico y contraseña (guardada cifrada, nunca en claro).</li>
+            <li><strong>Inicio de sesión con Google:</strong> si lo usas, Google nos facilita tu nombre, correo y un identificador de cuenta.</li>
+            <li><strong>Direcciones:</strong> destinatario, dirección y teléfono que guardes para envíos y facturación.</li>
+            <li><strong>Pedidos:</strong> productos, importes, direcciones y estado de cada compra.</li>
+            <li><strong>Seguridad:</strong> dirección IP y navegador de cada sesión iniciada.</li>
+          </ul>
+
+          <h2>Para qué y con qué base legal</h2>
+          <ul>
+            <li>Gestionar tu cuenta, tus pedidos, envíos y devoluciones: ejecución del contrato (art. 6.1.b RGPD).</li>
+            <li>Cumplir obligaciones contables y fiscales: obligación legal (art. 6.1.c RGPD).</li>
+            <li>Proteger tu cuenta y prevenir fraudes: interés legítimo (art. 6.1.f RGPD).</li>
+          </ul>
+          <p>No vendemos tus datos ni los usamos para enviarte publicidad sin tu consentimiento.</p>
+
+          <h2>Cuánto tiempo los guardamos</h2>
+          <p>Mientras mantengas tu cuenta. Los datos de pedidos y facturación se conservan durante los plazos legales (hasta 6 años). Las sesiones caducan a los 30 días.</p>
+
+          <h2>Con quién los compartimos</h2>
+          <p>Solo con proveedores que los tratan por nuestra cuenta y bajo contrato: alojamiento de la web y de la base de datos, correo electrónico, Google (si inicias sesión con Google), la pasarela de pago y la empresa de transporte de tu pedido. Algunos de estos proveedores pueden estar fuera de la Unión Europea; en ese caso las transferencias se amparan en cláusulas contractuales tipo de la Comisión Europea o en el Marco de Privacidad de Datos UE-EE. UU.</p>
+          <p>Al elegir una contraseña comprobamos si aparece en filtraciones públicas enviando solo un fragmento de su huella cifrada, nunca la contraseña.</p>
+
+          <h2>Tus derechos</h2>
+          <p>Puedes pedir acceso, rectificación, supresión, oposición, limitación del tratamiento y portabilidad de tus datos escribiendo a {{ info.email }}. Tus datos personales también puedes corregirlos desde «Mi cuenta». Si no quedas satisfecho, puedes reclamar ante la Agencia Española de Protección de Datos (<a href="https://www.aepd.es" target="_blank" rel="noopener noreferrer">aepd.es</a>).</p>
+        }
+
+        @case ('cookies') {
+          <h1>Política de cookies</h1>
+          <p class="legal__updated">Última actualización: {{ info.lastUpdated }}</p>
+
+          <p>Este sitio solo usa cookies técnicas, imprescindibles para que puedas iniciar sesión y mantenerla. Están exentas de consentimiento según el artículo 22.2 de la LSSI, por eso no te mostramos ningún aviso. No usamos cookies de analítica ni de publicidad.</p>
+
+          <div class="legal__table" role="region" aria-label="Cookies utilizadas" tabindex="0">
+            <table>
+              <thead><tr><th>Cookie</th><th>Finalidad</th><th>Duración</th></tr></thead>
+              <tbody>
+                <tr><td><code>scs_access</code></td><td>Identifica tu sesión iniciada.</td><td>15 minutos</td></tr>
+                <tr><td><code>scs_refresh</code></td><td>Renueva tu sesión sin volver a pedirte la contraseña.</td><td>30 días</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>Si usas «Iniciar sesión con Google», Google puede usar sus propias cookies según su política de privacidad. Puedes borrar las cookies desde la configuración de tu navegador; si lo haces, se cerrará tu sesión.</p>
+        }
+
+        @case ('condiciones') {
+          <h1>Condiciones de venta</h1>
+          <p class="legal__updated">Última actualización: {{ info.lastUpdated }}</p>
+
+          <p>Estas condiciones regulan las compras realizadas en {{ info.website }}, gestionado por {{ info.owner }} (NIF {{ info.taxId }}). Al realizar un pedido declaras haberlas leído y aceptado.</p>
+
+          <h2>Productos y precios</h2>
+          <p>Los precios se muestran en euros e incluyen el IVA. Los gastos de envío se indican antes de pagar. Las imágenes son orientativas; las ediciones, idiomas y estados de cada producto se detallan en su ficha.</p>
+
+          <h2>Pedidos y disponibilidad</h2>
+          <p>Las unidades de tu pedido quedan reservadas mientras completas el pago. Si un producto se agota antes, no se te cobrará. Recibirás la confirmación del pedido por correo electrónico.</p>
+
+          <h2>Preventas</h2>
+          <p>En los productos en preventa la fecha de salida la fija el fabricante y puede variar. Si se retrasa, te avisaremos y podrás cancelar el pedido con reembolso completo mientras no se haya enviado.</p>
+
+          <h2>Pago y envío</h2>
+          <p>El pago se realiza con los medios disponibles en el momento de la compra. Enviamos a la dirección que indiques, en los plazos informados durante el pedido.</p>
+
+          <h2>Derecho de desistimiento</h2>
+          <p>Dispones de 14 días naturales desde la entrega para devolver tu compra sin dar explicaciones; escríbenos a {{ info.email }}. Te reembolsaremos en un máximo de 14 días por el mismo medio de pago. Los gastos de devolución corren de tu cuenta, salvo que el producto sea defectuoso. El producto sellado debe devolverse con su precinto original: si se ha abierto, podremos descontar la pérdida de valor.</p>
+
+          <h2>Garantía</h2>
+          <p>Todos los productos tienen la garantía legal de conformidad de 3 años. Si recibes un producto dañado o distinto al pedido, contáctanos y lo resolveremos sin coste para ti.</p>
+
+          <h2>Reclamaciones</h2>
+          <p>Puedes escribirnos a {{ info.email }} para cualquier incidencia. Tienes también a tu disposición las hojas de reclamaciones y las juntas arbitrales de consumo.</p>
+        }
+      }
+    </article>
+  </div>
+</main>

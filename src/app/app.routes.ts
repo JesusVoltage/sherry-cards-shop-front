@@ -31,6 +31,38 @@ export const routes: Routes = [
 				)
 			},
 			{
+				path: 'aviso-legal',
+				title: 'Aviso legal · Sherry Card Shop',
+				data: { page: 'aviso-legal' },
+				loadComponent: () => import('./features/legal/pages/legal-page/legal-page.component').then(
+					(module) => module.LegalPageComponent
+				)
+			},
+			{
+				path: 'privacidad',
+				title: 'Política de privacidad · Sherry Card Shop',
+				data: { page: 'privacidad' },
+				loadComponent: () => import('./features/legal/pages/legal-page/legal-page.component').then(
+					(module) => module.LegalPageComponent
+				)
+			},
+			{
+				path: 'cookies',
+				title: 'Política de cookies · Sherry Card Shop',
+				data: { page: 'cookies' },
+				loadComponent: () => import('./features/legal/pages/legal-page/legal-page.component').then(
+					(module) => module.LegalPageComponent
+				)
+			},
+			{
+				path: 'condiciones',
+				title: 'Condiciones de venta · Sherry Card Shop',
+				data: { page: 'condiciones' },
+				loadComponent: () => import('./features/legal/pages/legal-page/legal-page.component').then(
+					(module) => module.LegalPageComponent
+				)
+			},
+			{
 				path: 'cuenta',
 				canActivate: [AuthGuard],
 				loadComponent: () => import('./features/account/layout/account-layout.component').then(

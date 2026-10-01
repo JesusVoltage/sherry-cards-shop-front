@@ -6,9 +6,13 @@ import { authCredentialsInterceptor } from '../auth/interceptors/auth-credential
 import { AuthService } from '../auth/services/auth.service';
 import { AccountLayoutComponent } from './layout/account-layout.component';
 import { AccountAddressesComponent } from './pages/account-addresses/account-addresses.component';
+import { AccountDetailsComponent } from './pages/account-details/account-details.component';
 
 const api = 'https://sherry-cards-shop-api-production.up.railway.app/api';
-const user = { id: 1, username: 'ana_cards', email: 'ana@example.com', nombre: 'Ana', apellidos: 'López', role: 'CLIENTE', status: 'ACTIVO' };
+const user = {
+  id: 1, username: 'ana_cards', email: 'ana@example.com', nombre: 'Ana', apellidos: 'López',
+  role: 'CLIENTE', status: 'ACTIVO', hasPassword: true, googleLinked: false
+};
 const ok = (data: unknown = null) => ({ success: true, message: 'OK', data, timestamp: '2026-10-01T10:00:00Z' });
 
 describe('Account area', () => {
@@ -81,5 +85,47 @@ describe('Account area', () => {
     expect(create.request.body.alias).toBeUndefined();
     create.flush(ok({ id: 5 }));
     http.expectOne(`${api}/account/addresses`).flush(ok([]));
+  });
+
+  function fillInputs(element: HTMLElement, values: Record<string, string>): void {
+    for (const [id, value] of Object.entries(values)) {
+      const input = element.querySelector<HTMLInputElement>(`#${id}`)!;
+      input.value = value;
+      input.dispatchEvent(new Event('input'));
+    }
+  }
+
+  it('updates the profile and refreshes the user in memory', () => {
+    const fixture = TestBed.createComponent(AccountDetailsComponent);
+    fixture.detectChanges();
+    const element: HTMLElement = fixture.nativeElement;
+    expect(element.querySelector<HTMLInputElement>('#profile-email')!.readOnly).toBeTrue();
+    fillInputs(element, { 'profile-name': ' Ana María ' });
+    fixture.detectChanges();
+    element.querySelectorAll('form')[0].dispatchEvent(new Event('submit'));
+
+    const request = http.expectOne({ method: 'PUT', url: `${api}/account/profile` });
+    expect(request.request.withCredentials).toBeTrue();
+    expect(request.request.body).toEqual({ username: 'ana_cards', nombre: 'Ana María', apellidos: 'López' });
+    request.flush(ok({ ...user, nombre: 'Ana María' }));
+    fixture.detectChanges();
+    expect(TestBed.inject(AuthService).user()?.nombre).toBe('Ana María');
+    expect(element.textContent).toContain('Tus datos se han guardado');
+  });
+
+  it('shows the API reason when the new password is rejected', () => {
+    const fixture = TestBed.createComponent(AccountDetailsComponent);
+    fixture.detectChanges();
+    const element: HTMLElement = fixture.nativeElement;
+    fillInputs(element, { 'password-current': 'actual-123', 'password-new': 'qwertyuiop123', 'password-confirm': 'qwertyuiop123' });
+    fixture.detectChanges();
+    element.querySelectorAll('form')[1].dispatchEvent(new Event('submit'));
+
+    const request = http.expectOne({ method: 'PUT', url: `${api}/account/password` });
+    expect(request.request.body).toEqual({ currentPassword: 'actual-123', newPassword: 'qwertyuiop123' });
+    const reason = 'Esta contraseña aparece en filtraciones de datos conocidas. Elige otra distinta';
+    request.flush({ success: false, message: reason, data: { newPassword: reason } }, { status: 400, statusText: 'Bad Request' });
+    fixture.detectChanges();
+    expect(element.textContent).toContain(reason);
   });
 });

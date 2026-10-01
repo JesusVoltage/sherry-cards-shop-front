@@ -1,9 +1,11 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
 import { GOOGLE_CLIENT_ID } from '../../../../core/config/api.config';
+import { applyApiFieldErrors } from '../../../../core/utils/api-errors';
 import { GoogleSignInButtonComponent } from '../../components/google-sign-in-button/google-sign-in-button.component';
 import { AuthService } from '../../services/auth.service';
 import { authErrorMessage, registrationConflict } from '../../utils/auth-errors';
@@ -53,6 +55,8 @@ export class RegisterPageComponent {
         this.error.set(authErrorMessage(error, 'register'));
         const field = registrationConflict(error);
         if (field) this.form.controls[field].setErrors({ duplicate: true });
+        // Reglas de la API sobre la contraseña (filtraciones, datos de la cuenta…).
+        if (error instanceof HttpErrorResponse && error.status === 400) applyApiFieldErrors(this.form, error);
       }
     });
   }

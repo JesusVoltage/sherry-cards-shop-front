@@ -13,6 +13,7 @@ export const passwordsMatch: ValidatorFn = (group: AbstractControl): ValidationE
 
 export function fieldError(control: AbstractControl, label: string): string | null {
   if (!control.touched || !control.errors) return null;
+  if (control.hasError('server')) return control.getError('server');
   if (control.hasError('required')) return label === 'La contraseña'
     ? 'La contraseña es obligatoria.' : `${label} es obligatorio.`;
   if (control.hasError('email')) return 'Introduce un correo electrónico válido.';

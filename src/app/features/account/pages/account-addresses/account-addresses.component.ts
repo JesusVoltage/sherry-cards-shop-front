@@ -6,7 +6,7 @@ import { finalize } from 'rxjs';
 import { Address, AddressRequest } from '../../models/address.model';
 import { AddressesApiService } from '../../services/addresses-api.service';
 import { AccountSessionService } from '../../services/account-session.service';
-import { accountErrorMessage, addressFieldError } from '../../utils/account-errors';
+import { accountErrorMessage, accountFieldError } from '../../utils/account-errors';
 
 const PHONE_PATTERN = /^[0-9 +().-]*$/;
 const MAX_ADDRESSES = 20;
@@ -36,7 +36,7 @@ export class AccountAddressesComponent implements OnInit {
   protected readonly success = signal<string | null>(null);
   protected readonly confirmDelete = signal<number | null>(null);
   protected readonly deleting = signal(false);
-  protected readonly errorFor = addressFieldError;
+  protected readonly errorFor = accountFieldError;
   protected readonly form = inject(FormBuilder).nonNullable.group({
     alias: ['', [Validators.maxLength(100)]],
     nombreDestinatario: ['', [Validators.required, Validators.maxLength(100)]],

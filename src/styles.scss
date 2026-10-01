@@ -229,6 +229,17 @@ textarea {
 	box-shadow: var(--focus-ring);
 }
 
+.field input[readonly] {
+	background: var(--bg);
+	color: var(--muted);
+	cursor: default;
+}
+
+.field input[readonly]:focus {
+	border-color: var(--line-strong);
+	box-shadow: none;
+}
+
 .field input[aria-invalid='true'] {
 	border-color: var(--danger);
 }

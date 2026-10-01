@@ -112,6 +112,11 @@ export class AuthService {
     return this.logoutRequest;
   }
 
+  /** Sustituye el perfil en memoria tras editarlo desde la cuenta. */
+  updateCurrentUser(user: User): void {
+    if (this.userState()) this.setUser(toUser(user));
+  }
+
   private startSession(path: 'login' | 'google', body: object): Observable<User> {
     this.cancelRecovery.next();
     this.setUser(null);
@@ -136,11 +141,7 @@ export class AuthService {
           throw new AuthResponseError('Respuesta de usuario no válida.');
         }
         // Keep only public profile fields in memory, never tokens from a response.
-        return {
-          id: user.id, username: user.username, email: user.email, nombre: user.nombre,
-          apellidos: user.apellidos ?? null, role: user.role, status: user.status,
-          emailVerifiedAt: user.emailVerifiedAt ?? null, lastAccessAt: user.lastAccessAt ?? null
-        };
+        return toUser(user);
       })
     );
   }
@@ -166,4 +167,14 @@ export class AuthService {
     this.statusState.set(user ? 'authenticated' : 'anonymous');
     this.errorState.set(null);
   }
+}
+
+/** Copia solo los campos públicos del perfil; nunca conserva tokens u otros datos de la respuesta. */
+function toUser(user: User): User {
+  return {
+    id: user.id, username: user.username, email: user.email, nombre: user.nombre,
+    apellidos: user.apellidos ?? null, role: user.role, status: user.status,
+    emailVerifiedAt: user.emailVerifiedAt ?? null, lastAccessAt: user.lastAccessAt ?? null,
+    hasPassword: user.hasPassword === true, googleLinked: user.googleLinked === true
+  };
 }

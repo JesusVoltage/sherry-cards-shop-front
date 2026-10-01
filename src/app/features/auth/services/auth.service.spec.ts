@@ -8,7 +8,8 @@ import { AuthService } from './auth.service';
 const url = 'https://sherry-cards-shop-api-production.up.railway.app/api/auth';
 const user: User = {
   id: 7, username: 'coleccionista', email: 'cards@example.com', nombre: 'Ana',
-  apellidos: null, role: 'USER', status: 'ACTIVE', emailVerifiedAt: null, lastAccessAt: null
+  apellidos: null, role: 'USER', status: 'ACTIVE', emailVerifiedAt: null, lastAccessAt: null,
+  hasPassword: true, googleLinked: false
 };
 const response = (data: unknown = null) => ({ success: true, message: 'OK', data, timestamp: '2026-09-30T10:00:00Z' });
 

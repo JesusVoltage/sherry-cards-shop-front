@@ -1,13 +1,124 @@
 <div class="page-header"><h2>Detalles de la cuenta</h2></div>
+
 @if (user(); as profile) {
-  <dl class="card details">
-    <div><dt>Nombre de usuario</dt><dd>{{ profile.username }}</dd></div>
-    <div><dt>Correo electrónico</dt><dd>{{ profile.email }}</dd></div>
-    <div><dt>Nombre</dt><dd>{{ profile.nombre }} {{ profile.apellidos }}</dd></div>
-    <div>
-      <dt>Correo verificado</dt>
-      <dd>{{ profile.emailVerifiedAt ? 'Sí, desde el ' + (profile.emailVerifiedAt | date: 'd/M/yyyy') : 'Todavía no' }}</dd>
+  <section class="card section" aria-labelledby="profile-title">
+    <div class="section__head">
+      <h3 id="profile-title">Datos personales</h3>
+      <p>Así aparecerás en la tienda y en tus pedidos.</p>
     </div>
-  </dl>
-  <p class="intro hint">Pronto podrás modificar tus datos y tu contraseña desde aquí.</p>
+    @if (profileSuccess(); as message) { <p class="notice notice--success" role="status">{{ message }}</p> }
+    @if (profileError(); as message) { <p class="notice notice--error" role="alert">{{ message }}</p> }
+
+    <form [formGroup]="profileForm" (ngSubmit)="saveProfile()" [attr.aria-busy]="profileSaving()" novalidate>
+      <fieldset class="grid" [disabled]="profileSaving()">
+        <div class="field">
+          <label for="profile-username">Nombre de usuario</label>
+          <input id="profile-username" formControlName="username" autocomplete="username" autocapitalize="none"
+            spellcheck="false" required [attr.aria-invalid]="!!errorFor(profileForm.controls.username)"
+            aria-describedby="profile-username-help" />
+          @if (errorFor(profileForm.controls.username); as message) {
+            <p class="field-error" id="profile-username-help">{{ message }}</p>
+          } @else {
+            <p class="field-hint" id="profile-username-help">Entre 3 y 30 caracteres: letras, números, guion o guion bajo.</p>
+          }
+        </div>
+        <div class="field">
+          <label for="profile-email">Correo electrónico</label>
+          <input id="profile-email" type="email" [value]="profile.email" readonly aria-describedby="profile-email-help" />
+          <p class="field-hint" id="profile-email-help">Por seguridad, el correo aún no se puede cambiar desde aquí.</p>
+        </div>
+        <div class="field">
+          <label for="profile-name">Nombre</label>
+          <input id="profile-name" formControlName="nombre" autocomplete="given-name" required
+            [attr.aria-invalid]="!!errorFor(profileForm.controls.nombre)" />
+          @if (errorFor(profileForm.controls.nombre); as message) { <p class="field-error">{{ message }}</p> }
+        </div>
+        <div class="field">
+          <label for="profile-surname">Apellidos <span class="optional">(opcional)</span></label>
+          <input id="profile-surname" formControlName="apellidos" autocomplete="family-name"
+            [attr.aria-invalid]="!!errorFor(profileForm.controls.apellidos)" />
+          @if (errorFor(profileForm.controls.apellidos); as message) { <p class="field-error">{{ message }}</p> }
+        </div>
+      </fieldset>
+      <div class="form-actions">
+        <button class="btn btn--secondary" type="button" (click)="resetProfile()" [disabled]="profileSaving() || profileForm.pristine">Descartar</button>
+        <button class="btn btn--primary" type="submit" [disabled]="profileSaving() || profileForm.pristine">
+          {{ profileSaving() ? 'Guardando…' : 'Guardar cambios' }}
+        </button>
+      </div>
+    </form>
+  </section>
+
+  <section class="card section" aria-labelledby="password-title">
+    <div class="section__head">
+      <h3 id="password-title">{{ profile.hasPassword ? 'Cambiar contraseña' : 'Crear contraseña' }}</h3>
+      <p>
+        @if (profile.hasPassword) {
+          Te pediremos tu contraseña actual. Al cambiarla cerraremos la sesión en tus otros dispositivos.
+        } @else {
+          Entras con Google. Crea una contraseña si también quieres iniciar sesión con tu correo.
+        }
+      </p>
+    </div>
+    @if (passwordSuccess(); as message) { <p class="notice notice--success" role="status">{{ message }}</p> }
+    @if (passwordError(); as message) { <p class="notice notice--error" role="alert">{{ message }}</p> }
+
+    <form [formGroup]="passwordForm" (ngSubmit)="changePassword()" [attr.aria-busy]="passwordSaving()" novalidate>
+      <!-- Ayuda a los gestores de contraseñas a asociar la nueva contraseña con la cuenta. -->
+      <input class="visually-hidden" type="text" autocomplete="username" [value]="profile.email" readonly tabindex="-1" aria-hidden="true" />
+      <fieldset class="grid" [disabled]="passwordSaving()">
+        @if (profile.hasPassword) {
+          <div class="field field--full">
+            <label for="password-current">Contraseña actual</label>
+            <input id="password-current" [type]="showPasswords() ? 'text' : 'password'" formControlName="currentPassword"
+              autocomplete="current-password" required [attr.aria-invalid]="!!errorFor(passwordForm.controls.currentPassword)" />
+            @if (errorFor(passwordForm.controls.currentPassword); as message) { <p class="field-error">{{ message }}</p> }
+          </div>
+        }
+        <div class="field">
+          <label for="password-new">Nueva contraseña</label>
+          <input id="password-new" [type]="showPasswords() ? 'text' : 'password'" formControlName="newPassword"
+            autocomplete="new-password" required aria-describedby="password-new-help"
+            [attr.aria-invalid]="!!errorFor(passwordForm.controls.newPassword)" />
+          @if (errorFor(passwordForm.controls.newPassword); as message) {
+            <p class="field-error" id="password-new-help">{{ message }}</p>
+          } @else {
+            <p class="field-hint" id="password-new-help">Mínimo 8 caracteres. Lo más seguro es una frase larga que no uses en otros sitios.</p>
+          }
+        </div>
+        <div class="field">
+          <label for="password-confirm">Repite la nueva contraseña</label>
+          <input id="password-confirm" [type]="showPasswords() ? 'text' : 'password'" formControlName="confirmPassword"
+            autocomplete="new-password" required
+            [attr.aria-invalid]="passwordForm.controls.confirmPassword.touched && (passwordForm.controls.confirmPassword.invalid || passwordForm.hasError('mismatch'))" />
+          @if (errorFor(passwordForm.controls.confirmPassword); as message) {
+            <p class="field-error">{{ message }}</p>
+          } @else if (passwordForm.controls.confirmPassword.touched && passwordForm.hasError('mismatch')) {
+            <p class="field-error">Las contraseñas no coinciden.</p>
+          }
+        </div>
+        <label class="check field--full">
+          <input type="checkbox" [checked]="showPasswords()" (change)="showPasswords.set(!showPasswords())" />
+          Mostrar contraseñas
+        </label>
+      </fieldset>
+      <div class="form-actions">
+        <button class="btn btn--primary" type="submit" [disabled]="passwordSaving()">
+          {{ passwordSaving() ? 'Guardando…' : profile.hasPassword ? 'Cambiar contraseña' : 'Crear contraseña' }}
+        </button>
+      </div>
+    </form>
+  </section>
+
+  <section class="card section" aria-labelledby="security-title">
+    <div class="section__head"><h3 id="security-title">Seguridad</h3></div>
+    <dl class="details">
+      <div>
+        <dt>Correo verificado</dt>
+        <dd>{{ profile.emailVerifiedAt ? 'Sí, desde el ' + (profile.emailVerifiedAt | date: 'd/M/yyyy') : 'Todavía no' }}</dd>
+      </div>
+      <div><dt>Inicio de sesión con Google</dt><dd>{{ profile.googleLinked ? 'Vinculado' : 'No vinculado' }}</dd></div>
+      <div><dt>Contraseña</dt><dd>{{ profile.hasPassword ? 'Configurada' : 'Sin contraseña' }}</dd></div>
+    </dl>
+  </section>
 }

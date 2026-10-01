@@ -8,6 +8,9 @@ export interface User {
   status: string;
   emailVerifiedAt: string | null;
   lastAccessAt: string | null;
+  /** false en cuentas creadas con Google que todavía no tienen contraseña. */
+  hasPassword: boolean;
+  googleLinked: boolean;
 }
 
 export interface LoginRequest {

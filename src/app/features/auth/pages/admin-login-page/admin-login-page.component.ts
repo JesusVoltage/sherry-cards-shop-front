@@ -13,7 +13,7 @@ import { fieldError } from '../../utils/auth-validators';
 
 const NOT_ADMIN = 'Esta cuenta no tiene acceso de administrador.';
 
-/** Acceso de administración: lleva al panel, desde donde se puede ver la tienda aunque esté cerrada. */
+/** Acceso de administración: la única puerta a la tienda mientras está cerrada al público. */
 @Component({
   selector: 'scw-admin-login-page',
   imports: [ReactiveFormsModule, BrandLogoComponent],
@@ -37,9 +37,9 @@ export class AdminLoginPageComponent {
     meta.updateTag({ name: 'robots', content: 'noindex, nofollow' });
     this.destroyRef.onDestroy(() => meta.removeTag('name="robots"'));
 
-    // Un administrador que ya tiene sesión pasa directamente al panel.
+    // Un administrador que ya tiene sesión pasa directamente a la tienda.
     this.auth.restoreSession().pipe(takeUntilDestroyed()).subscribe((user) => {
-      if (user?.role === ADMIN_ROLE) void this.router.navigateByUrl('/controlpanel');
+      if (user?.role === ADMIN_ROLE) void this.router.navigateByUrl('/');
     });
   }
 
@@ -61,7 +61,7 @@ export class AdminLoginPageComponent {
           return;
         }
         this.form.reset();
-        void this.router.navigateByUrl('/controlpanel');
+        void this.router.navigateByUrl('/');
       },
       error: (error: unknown) => this.error.set(
         error instanceof HttpErrorResponse && error.status === 403 ? NOT_ADMIN : authErrorMessage(error, 'login')

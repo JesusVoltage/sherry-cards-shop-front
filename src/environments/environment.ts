@@ -1,5 +1,5 @@
 export const environment = {
-  apiBaseUrl: 'https://sherry-cards-shop-api-production.up.railway.app',
+  apiBaseUrl: 'https://api.sherrycardshop.es',
   // Client ID OAuth "Aplicación web" de Google Cloud. Vacío oculta el botón de Google.
   googleClientId: ''
 };

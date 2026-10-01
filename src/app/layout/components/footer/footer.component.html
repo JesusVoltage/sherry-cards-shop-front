@@ -1,40 +1,58 @@
 <footer class="footer" id="footer">
-  <div class="container-shell footer__main">
-    <div class="footer__brand-column">
-      <a class="footer__brand" href="#top" aria-label="Sherry Card Shop, volver arriba">
-        <span class="footer__brand-icon"><svg lucideDisc3 [size]="22" aria-hidden="true"></svg></span>
-        <span>Sherry Card Shop</span>
-      </a>
-      <p>Un espacio para quienes encuentran mundos enteros en una sola carta.</p>
-      <div class="footer__socials" aria-label="Redes sociales">
-        <span>Instagram</span><span>Discord</span><span>YouTube</span>
+  <div class="container-shell">
+    <section class="footer__hero" aria-labelledby="footer-signal">
+      <div class="footer__statement">
+        <span class="footer__eyebrow"><svg lucideSparkles [size]="14" aria-hidden="true"></svg> Sherry Card Shop</span>
+        <p>Un espacio para quienes encuentran mundos enteros en <em>una sola carta</em>.</p>
       </div>
-    </div>
+      <div class="footer__signal">
+        <h2 id="footer-signal">Una señal desde el otro lado</h2>
+        <p>Las novedades llegarán cuando el universo esté listo.</p>
+        <span class="footer__soon"><i aria-hidden="true"></i> Newsletter próximamente</span>
+      </div>
+    </section>
 
-    <div class="footer__column">
-      <h2>Sherry Card Shop</h2>
-      <span>Una marca en construcción</span>
-      <span>El mundo que viene</span>
-      <span>Identidad visual</span>
-    </div>
+    <div class="footer__grid">
+      <div class="footer__brand-column">
+        <a class="footer__brand" routerLink="/" aria-label="Sherry Card Shop, inicio">
+          <span class="footer__mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          Sherry Card Shop
+        </a>
+        <p>Cartas coleccionables y accesorios para tu próxima partida o tu próxima vitrina.</p>
+      </div>
 
-    <div class="footer__column">
-      <h2>Información</h2>
-      <a href="#footer">Contacto</a>
-      <a href="#footer">Privacidad</a>
-      <a href="#footer">Condiciones</a>
-    </div>
+      <nav class="footer__column" aria-labelledby="footer-shop">
+        <h2 id="footer-shop">Tienda</h2>
+        <a routerLink="/" fragment="novedades">Novedades</a>
+        <a routerLink="/" fragment="categorias">Categorías</a>
+        <a routerLink="/cuenta">Mi cuenta</a>
+      </nav>
 
-    <div class="footer__newsletter">
-      <h2>Una señal desde el otro lado.</h2>
-      <p>Las novedades llegarán cuando el universo esté listo.</p>
-      <span class="footer__coming-soon">Newsletter próximamente</span>
+      <div class="footer__column">
+        <h2>Información</h2>
+        <span>Contacto <small>Pronto</small></span>
+        <span>Privacidad <small>Pronto</small></span>
+        <span>Condiciones <small>Pronto</small></span>
+      </div>
+
+      <div class="footer__column">
+        <h2>Comunidad</h2>
+        <span>Instagram <small>Pronto</small></span>
+        <span>Discord <small>Pronto</small></span>
+        <span>YouTube <small>Pronto</small></span>
+      </div>
     </div>
   </div>
 
-  <div class="container-shell footer__bottom">
-    <span>© 2026 Sherry Card Shop</span>
-    <span class="footer__status"><i></i> Construyendo algo especial</span>
-    <a href="#top">Volver arriba <svg lucideArrowUpRight [size]="14" aria-hidden="true"></svg></a>
+  <div class="footer__wordmark" aria-hidden="true">Sherry Card Shop</div>
+
+  <div class="footer__bottom-wrap">
+    <div class="container-shell footer__bottom">
+      <span>© {{ year }} Sherry Card Shop</span>
+      <span class="footer__status"><i aria-hidden="true"></i> Construyendo algo especial</span>
+      <button class="footer__top" type="button" (click)="scrollToTop()">
+        Volver arriba <svg lucideArrowUp [size]="14" aria-hidden="true"></svg>
+      </button>
+    </div>
   </div>
 </footer>

@@ -118,7 +118,7 @@ describe('HomePageComponent novelties', () => {
     expect(element.querySelector('#novedades [role="alert"]')?.textContent)
       .toContain('No se pudieron cargar las novedades');
     expect(element.querySelector('.category__name')?.textContent).toContain('One Piece');
-    element.querySelector<HTMLButtonElement>('#novedades .retry-button')!.click();
+    element.querySelector<HTMLButtonElement>('#novedades .novelties-state button')!.click();
     fixture.detectChanges();
 
     expect(element.querySelector('#novedades [role="alert"]')).toBeNull();

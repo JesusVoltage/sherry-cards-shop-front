@@ -60,7 +60,7 @@ describe('Account area', () => {
     fixture.detectChanges();
     expect(element.textContent).toContain('Todavía no has guardado ninguna dirección');
 
-    element.querySelector<HTMLButtonElement>('.empty .button')!.click();
+    element.querySelector<HTMLButtonElement>('.empty .btn')!.click();
     fixture.detectChanges();
     expect(element.querySelector<HTMLInputElement>('#address-name')!.value).toBe('Ana');
     expect(element.querySelector<HTMLInputElement>('#address-surname')!.value).toBe('López');

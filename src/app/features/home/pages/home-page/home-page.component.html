@@ -18,7 +18,7 @@
       } @else if (noveltiesLoadError()) {
         <div class="novelties-state" role="alert">
           <p>No se pudieron cargar las novedades en este momento.</p>
-          <button class="retry-button" type="button" (click)="loadNovelties()">Reintentar</button>
+          <button class="btn btn--secondary" type="button" (click)="loadNovelties()">Reintentar</button>
         </div>
       } @else if (novelties().length === 0) {
         <p class="novelties-state">Todavía no hay novedades disponibles.</p>
@@ -75,7 +75,7 @@
       } @else if (loadError()) {
         <div class="categories-state" role="alert">
           <p>No se pudieron cargar las categorías en este momento.</p>
-          <button class="retry-button" type="button" (click)="loadCategories()">Reintentar</button>
+          <button class="btn btn--secondary" type="button" (click)="loadCategories()">Reintentar</button>
         </div>
       } @else if (categories().length === 0) {
         <p class="categories-state">Todavía no hay categorías disponibles.</p>

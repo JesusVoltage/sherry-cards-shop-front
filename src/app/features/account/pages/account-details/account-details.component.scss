@@ -1,6 +1,6 @@
 .details { display: grid; margin: 0 0 1rem; padding: 0.25rem 1.25rem; }
-.details div { padding: 0.9rem 0; border-bottom: 1px solid #e9edf5; }
+.details div { padding: 0.9rem 0; border-bottom: 1px solid var(--line); }
 .details div:last-child { border-bottom: 0; }
-dt { color: #69758b; font-size: 0.75rem; }
+dt { color: var(--muted); font-size: 0.75rem; }
 dd { margin: 0.25rem 0 0; font-size: 0.9375rem; overflow-wrap: anywhere; }
 .hint { font-size: 0.8125rem; }

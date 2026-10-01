@@ -1,7 +1,7 @@
 <div class="page-header">
   <h2>Direcciones</h2>
   @if (!formOpen() && addresses().length < maxAddresses) {
-    <button class="button" type="button" (click)="openNew()">
+    <button class="btn btn--soft" type="button" (click)="openNew()">
       <svg lucidePlus [size]="16" aria-hidden="true"></svg>Añadir dirección
     </button>
   }
@@ -84,7 +84,7 @@
       </div>
 
       <div class="field field--full usage" role="group" aria-labelledby="address-usage">
-        <span id="address-usage" class="usage__title">Usar esta dirección para</span>
+        <span id="address-usage" class="field__label">Usar esta dirección para</span>
         <label class="check"><input type="checkbox" formControlName="usoEnvio" /> Envíos</label>
         @if (form.controls.usoEnvio.value) {
           <label class="check check--nested"><input type="checkbox" formControlName="predeterminadaEnvio" /> Dirección de envío predeterminada</label>
@@ -99,8 +99,8 @@
       </div>
     </fieldset>
     <div class="form-actions">
-      <button class="button button--ghost" type="button" (click)="closeForm()" [disabled]="saving()">Cancelar</button>
-      <button class="button" type="submit" [disabled]="saving()">
+      <button class="btn btn--secondary" type="button" (click)="closeForm()" [disabled]="saving()">Cancelar</button>
+      <button class="btn btn--primary" type="submit" [disabled]="saving()">
         {{ saving() ? 'Guardando…' : editing() ? 'Guardar cambios' : 'Añadir dirección' }}
       </button>
     </div>
@@ -115,9 +115,9 @@
   <p class="intro" role="status">Cargando tus direcciones…</p>
 } @else if (addresses().length === 0 && !formOpen()) {
   <div class="card empty">
-    <svg lucideMapPin [size]="36" [strokeWidth]="1.25" aria-hidden="true"></svg>
+    <span class="empty__icon"><svg lucideMapPin [size]="26" [strokeWidth]="1.5" aria-hidden="true"></svg></span>
     <p>Todavía no has guardado ninguna dirección.</p>
-    <button class="button" type="button" (click)="openNew()">Añadir mi primera dirección</button>
+    <button class="btn btn--primary" type="button" (click)="openNew()">Añadir mi primera dirección</button>
   </div>
 } @else {
   <ul class="address-list">
@@ -126,10 +126,10 @@
         <div class="address__head">
           <strong>{{ address.alias || 'Dirección' }}</strong>
           <span class="badges">
-            @if (address.predeterminadaEnvio) { <span class="badge">Envío predeterminada</span> }
-            @else if (address.usoEnvio) { <span class="badge badge--muted">Envío</span> }
-            @if (address.predeterminadaFacturacion) { <span class="badge">Facturación predeterminada</span> }
-            @else if (address.usoFacturacion) { <span class="badge badge--muted">Facturación</span> }
+            @if (address.predeterminadaEnvio) { <span class="pill">Envío predeterminada</span> }
+            @else if (address.usoEnvio) { <span class="pill pill--muted">Envío</span> }
+            @if (address.predeterminadaFacturacion) { <span class="pill">Facturación predeterminada</span> }
+            @else if (address.usoFacturacion) { <span class="pill pill--muted">Facturación</span> }
           </span>
         </div>
         <address>
@@ -142,17 +142,17 @@
         @if (confirmDelete() === address.id) {
           <div class="address__actions" role="group" aria-label="Confirmar eliminación">
             <span>¿Eliminar esta dirección?</span>
-            <button class="button button--ghost" type="button" (click)="confirmDelete.set(null)" [disabled]="deleting()">No</button>
-            <button class="button button--danger" type="button" (click)="remove(address)" [disabled]="deleting()">
+            <button class="btn btn--secondary btn--sm" type="button" (click)="confirmDelete.set(null)" [disabled]="deleting()">No</button>
+            <button class="btn btn--danger btn--sm" type="button" (click)="remove(address)" [disabled]="deleting()">
               {{ deleting() ? 'Eliminando…' : 'Sí, eliminar' }}
             </button>
           </div>
         } @else {
           <div class="address__actions">
-            <button class="button button--ghost" type="button" (click)="openEdit(address)" [disabled]="formOpen()">
+            <button class="btn btn--secondary btn--sm" type="button" (click)="openEdit(address)" [disabled]="formOpen()">
               <svg lucidePencil [size]="15" aria-hidden="true"></svg>Editar
             </button>
-            <button class="button button--ghost" type="button" (click)="confirmDelete.set(address.id)" [disabled]="formOpen()">
+            <button class="btn btn--secondary btn--sm" type="button" (click)="confirmDelete.set(address.id)" [disabled]="formOpen()">
               <svg lucideTrash2 [size]="15" aria-hidden="true"></svg>Eliminar
             </button>
           </div>

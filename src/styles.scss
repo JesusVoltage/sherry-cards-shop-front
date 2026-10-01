@@ -1,9 +1,43 @@
+/*
+ * Sistema de diseño de Sherry Card Shop.
+ * Tinta oscura para lo importante, superficies claras y el azulina como acento suave.
+ * Botones, campos, casillas y avisos se definen aquí una sola vez para toda la web.
+ */
 :root {
 	color-scheme: light;
 	font-family: 'Inter Variable', Inter, sans-serif;
 	font-synthesis: none;
 	text-rendering: optimizeLegibility;
 	-webkit-font-smoothing: antialiased;
+
+	--ink: #161b2e;
+	--ink-hover: #2a3150;
+	--text: #1b2238;
+	--text-soft: #48516a;
+	--muted: #6b7489;
+	--line: #e3e7f0;
+	--line-strong: #cdd5e4;
+	--bg: #f6f7fb;
+	--surface: #ffffff;
+	--field: #fbfcff;
+
+	--azulina: #7590e4;
+	--azulina-strong: #4a62b5;
+	--azulina-soft: #eff2fd;
+	--azulina-tint: #e1e7fb;
+	--focus-ring: 0 0 0 3px rgb(117 144 228 / 0.3);
+
+	--danger: #ad3340;
+	--danger-soft: #fdf2f3;
+	--danger-line: #f2cfd4;
+	--success: #23674a;
+	--success-soft: #eff8f3;
+	--success-line: #c3e3d2;
+
+	--radius-sm: 0.5rem;
+	--radius: 0.75rem;
+	--radius-lg: 1.25rem;
+	--shadow: 0 10px 30px rgb(22 27 46 / 0.07);
 }
 
 *,
@@ -15,25 +49,302 @@
 html {
 	min-height: 100%;
 	scroll-behavior: smooth;
-	background: #f5f7fc;
+	background: var(--bg);
 }
 
 body {
 	min-height: 100vh;
 	margin: 0;
-	background: #f5f7fc;
-	color: #17213a;
+	background: var(--bg);
+	color: var(--text);
 	font-family: inherit;
 	font-size: 1rem;
 	line-height: 1.5;
 }
 
 button,
-input {
+input,
+select,
+textarea {
 	font: inherit;
 }
 
 :focus-visible {
-	outline: 2px solid #4a6af3;
+	outline: 2px solid var(--azulina);
 	outline-offset: 3px;
+}
+
+.container-shell {
+	width: min(100% - 2rem, 76rem);
+	margin-inline: auto;
+}
+
+/* ---------- Botones ---------- */
+
+.btn {
+	display: inline-flex;
+	min-height: 2.75rem;
+	align-items: center;
+	justify-content: center;
+	gap: 0.5rem;
+	padding: 0.6rem 1.2rem;
+	border: 1px solid transparent;
+	border-radius: var(--radius);
+	background: none;
+	color: var(--ink);
+	font-size: 0.875rem;
+	font-weight: 600;
+	line-height: 1.2;
+	text-decoration: none;
+	white-space: nowrap;
+	cursor: pointer;
+	transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.btn:focus-visible {
+	outline: none;
+	box-shadow: var(--focus-ring);
+}
+
+.btn:active:not(:disabled) {
+	transform: translateY(1px);
+}
+
+.btn:disabled {
+	opacity: 0.55;
+	cursor: not-allowed;
+}
+
+.btn[aria-busy='true'] {
+	cursor: wait;
+}
+
+/* Acción principal: tinta oscura con un filo azulina al pasar por encima. */
+.btn--primary {
+	background: var(--ink);
+	color: #fff;
+}
+
+.btn--primary:hover:not(:disabled) {
+	background: var(--ink-hover);
+	box-shadow: 0 0 0 3px rgb(117 144 228 / 0.22), 0 8px 20px rgb(22 27 46 / 0.16);
+}
+
+.btn--secondary {
+	border-color: var(--line-strong);
+	background: var(--surface);
+}
+
+.btn--secondary:hover:not(:disabled) {
+	border-color: var(--azulina);
+	background: var(--azulina-soft);
+	color: var(--azulina-strong);
+}
+
+.btn--soft {
+	background: var(--azulina-soft);
+	color: var(--azulina-strong);
+}
+
+.btn--soft:hover:not(:disabled) {
+	background: var(--azulina-tint);
+}
+
+.btn--danger {
+	border-color: var(--danger-line);
+	background: var(--danger-soft);
+	color: var(--danger);
+}
+
+.btn--danger:hover:not(:disabled) {
+	border-color: var(--danger);
+}
+
+.btn--sm {
+	min-height: 2.25rem;
+	padding: 0.4rem 0.85rem;
+	font-size: 0.8125rem;
+}
+
+.btn--block {
+	width: 100%;
+}
+
+.link-button {
+	padding: 0;
+	border: 0;
+	background: none;
+	color: var(--azulina-strong);
+	font-weight: 600;
+	text-decoration: underline;
+	text-decoration-color: var(--azulina-tint);
+	text-decoration-thickness: 2px;
+	text-underline-offset: 0.2em;
+	cursor: pointer;
+}
+
+.link-button:hover:not(:disabled) {
+	text-decoration-color: var(--azulina);
+}
+
+/* ---------- Formularios ---------- */
+
+.field {
+	display: flex;
+	min-width: 0;
+	flex-direction: column;
+	gap: 0.4rem;
+}
+
+.field > label:not(.check),
+.field__label {
+	color: var(--text);
+	font-size: 0.8125rem;
+	font-weight: 600;
+}
+
+.optional {
+	color: var(--muted);
+	font-weight: 400;
+}
+
+.field input:not([type='checkbox']):not([type='radio']),
+.field select,
+.field textarea {
+	width: 100%;
+	min-height: 2.875rem;
+	padding: 0.6rem 0.8rem;
+	border: 1px solid var(--line-strong);
+	border-radius: 0.625rem;
+	background: var(--field);
+	color: var(--text);
+	transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.field input:not([type='checkbox']):not([type='radio']):focus,
+.field select:focus,
+.field textarea:focus {
+	border-color: var(--azulina);
+	outline: none;
+	box-shadow: var(--focus-ring);
+}
+
+.field input[aria-invalid='true'] {
+	border-color: var(--danger);
+}
+
+.field-hint,
+.field-error {
+	margin: 0;
+	font-size: 0.75rem;
+	line-height: 1.5;
+}
+
+.field-hint {
+	color: var(--muted);
+}
+
+.field-error {
+	color: var(--danger);
+}
+
+.check {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.65rem;
+	color: var(--text);
+	font-size: 0.9375rem;
+	cursor: pointer;
+}
+
+.check input[type='checkbox'] {
+	display: grid;
+	width: 1.2rem;
+	height: 1.2rem;
+	flex: none;
+	margin: 0;
+	place-items: center;
+	border: 1.5px solid var(--line-strong);
+	border-radius: 0.375rem;
+	background: var(--surface);
+	appearance: none;
+	cursor: pointer;
+	transition: background-color 160ms ease, border-color 160ms ease;
+}
+
+.check input[type='checkbox']::after {
+	width: 0.65rem;
+	height: 0.65rem;
+	background: #fff;
+	clip-path: polygon(14% 52%, 0 66%, 38% 100%, 100% 22%, 86% 8%, 37% 70%);
+	content: '';
+	transform: scale(0);
+	transition: transform 120ms ease;
+}
+
+.check input[type='checkbox']:checked {
+	border-color: var(--azulina);
+	background: var(--azulina);
+}
+
+.check input[type='checkbox']:checked::after {
+	transform: scale(1);
+}
+
+.check input[type='checkbox']:hover:not(:checked) {
+	border-color: var(--azulina);
+}
+
+.check input[type='checkbox']:focus-visible {
+	outline: none;
+	box-shadow: var(--focus-ring);
+}
+
+/* ---------- Avisos y superficies ---------- */
+
+.notice {
+	margin: 0 0 1.25rem;
+	padding: 0.875rem 1rem;
+	border: 1px solid var(--line);
+	border-radius: var(--radius);
+	background: var(--bg);
+	color: var(--text-soft);
+	font-size: 0.8125rem;
+	line-height: 1.5;
+}
+
+.notice--error {
+	border-color: var(--danger-line);
+	background: var(--danger-soft);
+	color: var(--danger);
+}
+
+.notice--success {
+	border-color: var(--success-line);
+	background: var(--success-soft);
+	color: var(--success);
+}
+
+.surface-card {
+	padding: 1.25rem;
+	border: 1px solid var(--line);
+	border-radius: var(--radius-lg);
+	background: var(--surface);
+}
+
+.pill {
+	display: inline-flex;
+	align-items: center;
+	padding: 0.15rem 0.6rem;
+	border-radius: 999px;
+	background: var(--azulina-soft);
+	color: var(--azulina-strong);
+	font-size: 0.6875rem;
+	font-weight: 600;
+	white-space: nowrap;
+}
+
+.pill--muted {
+	background: var(--bg);
+	color: var(--muted);
 }

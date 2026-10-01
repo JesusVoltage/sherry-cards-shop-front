@@ -1,6 +1,6 @@
 <header class="navbar">
   <div class="navbar__inner container-shell">
-    <a class="brand" href="#top" aria-label="Sherry Card Shop, inicio" (click)="closeMenu()">
+    <a class="brand" routerLink="/" aria-label="Sherry Card Shop, inicio" (click)="closeMenu()">
       <span class="brand__mark" aria-hidden="true"><i></i><i></i><i></i></span>
       <span class="brand__name">Sherry Card Shop</span>
     </a>
@@ -12,16 +12,18 @@
     </div>
 
     <nav id="mobile-navigation" class="navbar__links" [class.navbar__links--open]="menuOpen()" aria-label="Navegación principal">
-      <a href="#top" (click)="closeMenu()">Inicio</a>
-      <a href="#novedades" (click)="closeMenu()">Novedades</a>
-      <a href="#categorias" (click)="closeMenu()">Categorías</a>
-      <a href="#footer" (click)="closeMenu()">Contacto</a>
+      <a routerLink="/" (click)="closeMenu()">Inicio</a>
+      <a routerLink="/" fragment="novedades" (click)="closeMenu()">Novedades</a>
+      <a routerLink="/" fragment="categorias" (click)="closeMenu()">Categorías</a>
+      <a routerLink="/" fragment="footer" (click)="closeMenu()">Contacto</a>
     </nav>
 
     <div class="navbar__actions">
-      <button class="icon-action" type="button" disabled aria-label="Cuenta próximamente" title="Próximamente">
+      <a class="icon-action" [routerLink]="auth.isAuthenticated() ? '/cuenta' : '/login'" (click)="closeMenu()"
+        [attr.aria-label]="auth.user() ? 'Mi cuenta: ' + auth.user()?.username : 'Iniciar sesión'"
+        [title]="auth.user() ? auth.user()?.username : 'Iniciar sesión'">
         <svg lucideUserRound [size]="19" aria-hidden="true"></svg>
-      </button>
+      </a>
       <span class="navbar__action-divider" aria-hidden="true"></span>
       <button class="icon-action icon-action--bag" type="button" disabled aria-label="Carrito próximamente" title="Próximamente">
         <svg lucideShoppingBag [size]="19" aria-hidden="true"></svg>

@@ -1,5 +1,6 @@
-import { Component, signal } from '@angular/core';
+import { afterNextRender, Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { AuthService } from './features/auth/services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -8,5 +9,9 @@ import { RouterOutlet } from '@angular/router';
   styleUrl: './app.scss'
 })
 export class App {
-  protected readonly title = signal('sherry-cards-world');
+  private readonly auth = inject(AuthService);
+
+  constructor() {
+    afterNextRender(() => this.auth.restoreSession().subscribe());
+  }
 }

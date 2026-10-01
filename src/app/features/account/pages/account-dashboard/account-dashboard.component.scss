@@ -1,0 +1,13 @@
+.tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr)); gap: 1rem; }
+.tile {
+  display: flex; min-height: 11rem; flex-direction: column; align-items: center; justify-content: center; gap: 1rem;
+  padding: 1.5rem; border: 1px solid #dfe5f0; border-radius: 1rem; background: #fff;
+  color: #17213a; font: inherit; font-weight: 600; text-align: center; text-decoration: none; cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s, color 0.15s;
+}
+.tile svg { color: #8a94a8; transition: color 0.15s; }
+.tile:hover:not(.tile--disabled):not(:disabled) { border-color: #c4d0f7; box-shadow: 0 10px 28px rgb(34 57 112 / 0.08); color: #3451cc; }
+.tile:hover:not(.tile--disabled):not(:disabled) svg { color: #4a6af3; }
+.tile--disabled { color: #8a94a8; cursor: default; }
+.tile small { color: #8a94a8; font-size: 0.75rem; font-weight: 500; }
+.tile:disabled { opacity: 0.6; cursor: wait; }

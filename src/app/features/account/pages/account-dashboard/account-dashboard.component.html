@@ -1,0 +1,30 @@
+@if (session.user(); as user) {
+  <p class="intro">
+    Hola <strong>{{ user.nombre }}</strong>
+    (¿no eres <strong>{{ user.username }}</strong>?
+    <button class="link-button" type="button" (click)="session.logout()" [disabled]="session.loggingOut()">Cerrar sesión</button>)
+  </p>
+}
+<p class="intro">
+  Desde el escritorio de tu cuenta puedes gestionar tus direcciones de envío y facturación y
+  consultar los detalles de tu cuenta. Muy pronto también podrás ver aquí tus pedidos.
+</p>
+
+<div class="tiles">
+  <span class="tile tile--disabled" aria-disabled="true">
+    <svg lucidePackage [size]="40" [strokeWidth]="1.25" aria-hidden="true"></svg>
+    Pedidos <small>Próximamente</small>
+  </span>
+  <a class="tile" routerLink="direcciones">
+    <svg lucideMapPin [size]="40" [strokeWidth]="1.25" aria-hidden="true"></svg>
+    Direcciones
+  </a>
+  <a class="tile" routerLink="datos">
+    <svg lucideUserRound [size]="40" [strokeWidth]="1.25" aria-hidden="true"></svg>
+    Detalles de la cuenta
+  </a>
+  <button class="tile" type="button" (click)="session.logout()" [disabled]="session.loggingOut()">
+    <svg lucideLogOut [size]="40" [strokeWidth]="1.25" aria-hidden="true"></svg>
+    Cerrar sesión
+  </button>
+</div>

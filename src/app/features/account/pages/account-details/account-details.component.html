@@ -1,0 +1,13 @@
+<div class="page-header"><h2>Detalles de la cuenta</h2></div>
+@if (user(); as profile) {
+  <dl class="card details">
+    <div><dt>Nombre de usuario</dt><dd>{{ profile.username }}</dd></div>
+    <div><dt>Correo electrónico</dt><dd>{{ profile.email }}</dd></div>
+    <div><dt>Nombre</dt><dd>{{ profile.nombre }} {{ profile.apellidos }}</dd></div>
+    <div>
+      <dt>Correo verificado</dt>
+      <dd>{{ profile.emailVerifiedAt ? 'Sí, desde el ' + (profile.emailVerifiedAt | date: 'd/M/yyyy') : 'Todavía no' }}</dd>
+    </div>
+  </dl>
+  <p class="intro hint">Pronto podrás modificar tus datos y tu contraseña desde aquí.</p>
+}

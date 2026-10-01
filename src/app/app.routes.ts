@@ -32,11 +32,33 @@ export const routes: Routes = [
 			},
 			{
 				path: 'cuenta',
-				title: 'Mi cuenta · Sherry Card Shop',
 				canActivate: [AuthGuard],
-				loadComponent: () => import('./features/auth/pages/account-page/account-page.component').then(
-					(module) => module.AccountPageComponent
-				)
+				loadComponent: () => import('./features/account/layout/account-layout.component').then(
+					(module) => module.AccountLayoutComponent
+				),
+				children: [
+					{
+						path: '',
+						title: 'Mi cuenta · Sherry Card Shop',
+						loadComponent: () => import('./features/account/pages/account-dashboard/account-dashboard.component').then(
+							(module) => module.AccountDashboardComponent
+						)
+					},
+					{
+						path: 'direcciones',
+						title: 'Mis direcciones · Sherry Card Shop',
+						loadComponent: () => import('./features/account/pages/account-addresses/account-addresses.component').then(
+							(module) => module.AccountAddressesComponent
+						)
+					},
+					{
+						path: 'datos',
+						title: 'Detalles de la cuenta · Sherry Card Shop',
+						loadComponent: () => import('./features/account/pages/account-details/account-details.component').then(
+							(module) => module.AccountDetailsComponent
+						)
+					}
+				]
 			}
 		]
 	},

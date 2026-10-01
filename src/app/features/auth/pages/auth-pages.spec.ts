@@ -4,7 +4,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { safeReturnUrl } from '../utils/auth-validators';
-import { AccountPageComponent } from './account-page/account-page.component';
 import { LoginPageComponent } from './login-page/login-page.component';
 import { RegisterPageComponent } from './register-page/register-page.component';
 
@@ -20,7 +19,7 @@ describe('Authentication forms', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [LoginPageComponent, RegisterPageComponent, AccountPageComponent],
+      imports: [LoginPageComponent, RegisterPageComponent],
       providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])]
     }).compileComponents();
     http = TestBed.inject(HttpTestingController);
@@ -30,7 +29,7 @@ describe('Authentication forms', () => {
   });
   afterEach(() => http.verify());
 
-  function render(component: typeof LoginPageComponent | typeof RegisterPageComponent | typeof AccountPageComponent): void {
+  function render(component: typeof LoginPageComponent | typeof RegisterPageComponent): void {
     fixture = TestBed.createComponent<unknown>(component);
     element = fixture.nativeElement;
     fixture.detectChanges();
@@ -156,19 +155,6 @@ describe('Authentication forms', () => {
     fixture.detectChanges();
     expect(element.querySelector('[role="alert"]')?.textContent).toContain('todavía no está disponible');
     expect(router.navigateByUrl).not.toHaveBeenCalled();
-  });
-
-  it('logs out from the account page and returns to login', () => {
-    TestBed.inject(AuthService).restoreSession().subscribe();
-    http.expectOne(`${base}/me`).flush({ ...ok, data: user });
-    render(AccountPageComponent);
-    expect(element.textContent).toContain(user.username);
-    element.querySelector<HTMLButtonElement>('button')!.click();
-    fixture.detectChanges();
-    expect(element.querySelector<HTMLButtonElement>('button')?.disabled).toBeTrue();
-    http.expectOne(`${base}/logout`).flush(ok);
-    expect(router.navigate).toHaveBeenCalledWith(['/login']);
-    expect(TestBed.inject(AuthService).user()).toBeNull();
   });
 
   it('accepts internal return paths and rejects external URLs and authentication loops', () => {

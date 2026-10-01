@@ -1,0 +1,166 @@
+<div class="page-header">
+  <h2>Direcciones</h2>
+  @if (!formOpen() && addresses().length < maxAddresses) {
+    <button class="button" type="button" (click)="openNew()">
+      <svg lucidePlus [size]="16" aria-hidden="true"></svg>Añadir dirección
+    </button>
+  }
+</div>
+
+@if (success(); as message) {
+  <p class="notice notice--success" role="status">{{ message }}</p>
+}
+
+@if (formOpen()) {
+  <form class="card address-form" [formGroup]="form" (ngSubmit)="save()" [attr.aria-busy]="saving()" novalidate>
+    <h3>{{ editing() ? 'Editar dirección' : 'Nueva dirección' }}</h3>
+    @if (formError(); as message) {
+      <p class="notice notice--error" role="alert">{{ message }}</p>
+    }
+    <fieldset [disabled]="saving()">
+      <div class="field field--full">
+        <label for="address-alias">Nombre de la dirección <span class="optional">(opcional)</span></label>
+        <input id="address-alias" formControlName="alias" placeholder="Casa, trabajo…" />
+        @if (errorFor(form.controls.alias); as message) { <p class="field-error">{{ message }}</p> }
+      </div>
+      <div class="field">
+        <label for="address-name">Nombre</label>
+        <input id="address-name" formControlName="nombreDestinatario" autocomplete="given-name" required
+          [attr.aria-invalid]="!!errorFor(form.controls.nombreDestinatario)" />
+        @if (errorFor(form.controls.nombreDestinatario); as message) { <p class="field-error">{{ message }}</p> }
+      </div>
+      <div class="field">
+        <label for="address-surname">Apellidos</label>
+        <input id="address-surname" formControlName="apellidosDestinatario" autocomplete="family-name" required
+          [attr.aria-invalid]="!!errorFor(form.controls.apellidosDestinatario)" />
+        @if (errorFor(form.controls.apellidosDestinatario); as message) { <p class="field-error">{{ message }}</p> }
+      </div>
+      <div class="field">
+        <label for="address-street">Calle</label>
+        <input id="address-street" formControlName="calle" autocomplete="address-line1" required
+          [attr.aria-invalid]="!!errorFor(form.controls.calle)" />
+        @if (errorFor(form.controls.calle); as message) { <p class="field-error">{{ message }}</p> }
+      </div>
+      <div class="field">
+        <label for="address-number">Número</label>
+        <input id="address-number" formControlName="numero" required
+          [attr.aria-invalid]="!!errorFor(form.controls.numero)" />
+        @if (errorFor(form.controls.numero); as message) { <p class="field-error">{{ message }}</p> }
+      </div>
+      <div class="field field--full">
+        <label for="address-extra">Piso, puerta, escalera… <span class="optional">(opcional)</span></label>
+        <input id="address-extra" formControlName="complemento" autocomplete="address-line2" />
+        @if (errorFor(form.controls.complemento); as message) { <p class="field-error">{{ message }}</p> }
+      </div>
+      <div class="field">
+        <label for="address-zip">Código postal</label>
+        <input id="address-zip" formControlName="codigoPostal" autocomplete="postal-code" inputmode="numeric" required
+          [attr.aria-invalid]="!!errorFor(form.controls.codigoPostal)" />
+        @if (errorFor(form.controls.codigoPostal); as message) { <p class="field-error">{{ message }}</p> }
+      </div>
+      <div class="field">
+        <label for="address-city">Localidad</label>
+        <input id="address-city" formControlName="localidad" autocomplete="address-level2" required
+          [attr.aria-invalid]="!!errorFor(form.controls.localidad)" />
+        @if (errorFor(form.controls.localidad); as message) { <p class="field-error">{{ message }}</p> }
+      </div>
+      <div class="field">
+        <label for="address-province">Provincia</label>
+        <input id="address-province" formControlName="provincia" autocomplete="address-level1" required
+          [attr.aria-invalid]="!!errorFor(form.controls.provincia)" />
+        @if (errorFor(form.controls.provincia); as message) { <p class="field-error">{{ message }}</p> }
+      </div>
+      <div class="field">
+        <label for="address-country">País</label>
+        <input id="address-country" formControlName="pais" autocomplete="country-name" required
+          [attr.aria-invalid]="!!errorFor(form.controls.pais)" />
+        @if (errorFor(form.controls.pais); as message) { <p class="field-error">{{ message }}</p> }
+      </div>
+      <div class="field field--full">
+        <label for="address-phone">Teléfono <span class="optional">(opcional, para el transportista)</span></label>
+        <input id="address-phone" type="tel" formControlName="telefono" autocomplete="tel"
+          [attr.aria-invalid]="!!errorFor(form.controls.telefono)" />
+        @if (errorFor(form.controls.telefono); as message) { <p class="field-error">{{ message }}</p> }
+      </div>
+
+      <div class="field field--full usage" role="group" aria-labelledby="address-usage">
+        <span id="address-usage" class="usage__title">Usar esta dirección para</span>
+        <label class="check"><input type="checkbox" formControlName="usoEnvio" /> Envíos</label>
+        @if (form.controls.usoEnvio.value) {
+          <label class="check check--nested"><input type="checkbox" formControlName="predeterminadaEnvio" /> Dirección de envío predeterminada</label>
+        }
+        <label class="check"><input type="checkbox" formControlName="usoFacturacion" /> Facturación</label>
+        @if (form.controls.usoFacturacion.value) {
+          <label class="check check--nested"><input type="checkbox" formControlName="predeterminadaFacturacion" /> Dirección de facturación predeterminada</label>
+        }
+        @if (form.hasError('usage') && (form.controls.usoEnvio.touched || form.controls.usoFacturacion.touched)) {
+          <p class="field-error">Marca al menos envíos o facturación.</p>
+        }
+      </div>
+    </fieldset>
+    <div class="form-actions">
+      <button class="button button--ghost" type="button" (click)="closeForm()" [disabled]="saving()">Cancelar</button>
+      <button class="button" type="submit" [disabled]="saving()">
+        {{ saving() ? 'Guardando…' : editing() ? 'Guardar cambios' : 'Añadir dirección' }}
+      </button>
+    </div>
+  </form>
+}
+
+@if (loadError(); as message) {
+  <div class="notice notice--error" role="alert">
+    {{ message }} <button class="link-button" type="button" (click)="load()">Reintentar</button>
+  </div>
+} @else if (loading() && addresses().length === 0) {
+  <p class="intro" role="status">Cargando tus direcciones…</p>
+} @else if (addresses().length === 0 && !formOpen()) {
+  <div class="card empty">
+    <svg lucideMapPin [size]="36" [strokeWidth]="1.25" aria-hidden="true"></svg>
+    <p>Todavía no has guardado ninguna dirección.</p>
+    <button class="button" type="button" (click)="openNew()">Añadir mi primera dirección</button>
+  </div>
+} @else {
+  <ul class="address-list">
+    @for (address of addresses(); track address.id) {
+      <li class="card address">
+        <div class="address__head">
+          <strong>{{ address.alias || 'Dirección' }}</strong>
+          <span class="badges">
+            @if (address.predeterminadaEnvio) { <span class="badge">Envío predeterminada</span> }
+            @else if (address.usoEnvio) { <span class="badge badge--muted">Envío</span> }
+            @if (address.predeterminadaFacturacion) { <span class="badge">Facturación predeterminada</span> }
+            @else if (address.usoFacturacion) { <span class="badge badge--muted">Facturación</span> }
+          </span>
+        </div>
+        <address>
+          {{ address.nombreDestinatario }} {{ address.apellidosDestinatario }}<br />
+          {{ address.calle }}, {{ address.numero }}{{ address.complemento ? ', ' + address.complemento : '' }}<br />
+          {{ address.codigoPostal }} {{ address.localidad }} ({{ address.provincia }})<br />
+          {{ address.pais }}
+          @if (address.telefono) { <br />Tel. {{ address.telefono }} }
+        </address>
+        @if (confirmDelete() === address.id) {
+          <div class="address__actions" role="group" aria-label="Confirmar eliminación">
+            <span>¿Eliminar esta dirección?</span>
+            <button class="button button--ghost" type="button" (click)="confirmDelete.set(null)" [disabled]="deleting()">No</button>
+            <button class="button button--danger" type="button" (click)="remove(address)" [disabled]="deleting()">
+              {{ deleting() ? 'Eliminando…' : 'Sí, eliminar' }}
+            </button>
+          </div>
+        } @else {
+          <div class="address__actions">
+            <button class="button button--ghost" type="button" (click)="openEdit(address)" [disabled]="formOpen()">
+              <svg lucidePencil [size]="15" aria-hidden="true"></svg>Editar
+            </button>
+            <button class="button button--ghost" type="button" (click)="confirmDelete.set(address.id)" [disabled]="formOpen()">
+              <svg lucideTrash2 [size]="15" aria-hidden="true"></svg>Eliminar
+            </button>
+          </div>
+        }
+      </li>
+    }
+  </ul>
+  @if (addresses().length >= maxAddresses) {
+    <p class="intro">Has alcanzado el máximo de {{ maxAddresses }} direcciones.</p>
+  }
+}

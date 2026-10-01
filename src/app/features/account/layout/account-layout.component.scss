@@ -1,0 +1,70 @@
+:host { display: block; }
+
+.account { padding: clamp(1.5rem, 5vw, 3rem) 1rem 4rem; }
+.account__inner {
+  display: grid;
+  width: min(100%, 72rem);
+  margin: 0 auto;
+  grid-template-columns: 15rem minmax(0, 1fr);
+  gap: clamp(1.5rem, 4vw, 3rem);
+}
+
+.account__aside { min-width: 0; }
+
+.account__title {
+  margin: 0 0 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #dfe5f0;
+  font-size: 1rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.account__nav { display: grid; margin: 0; padding: 0; gap: 0.25rem; list-style: none; }
+.account__nav a, .account__nav span, .account__nav button {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.8rem 1rem;
+  border: 0;
+  border-radius: 0.75rem;
+  background: none;
+  color: #17213a;
+  font: inherit;
+  font-size: 0.9375rem;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+.account__nav a:hover, .account__nav button:hover:not(:disabled) { background: #eef1f8; }
+.account__nav a.is-active { background: #e7ecfb; color: #3451cc; font-weight: 600; }
+.account__nav .is-disabled { color: #8a94a8; cursor: default; }
+.account__nav small {
+  margin-left: auto;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  background: #eef1f8;
+  font-size: 0.6875rem;
+}
+.account__nav button:disabled { opacity: 0.6; cursor: wait; }
+
+.account__content { min-width: 0; padding-left: clamp(0rem, 3vw, 3rem); border-left: 1px solid #dfe5f0; }
+.account__notice {
+  margin: 0 0 1.25rem;
+  padding: 0.875rem;
+  border: 1px solid #f0cad0;
+  border-radius: 0.625rem;
+  background: #fff3f4;
+  color: #a92537;
+  font-size: 0.8125rem;
+}
+
+@media (max-width: 48rem) {
+  .account__inner { grid-template-columns: minmax(0, 1fr); }
+  .account__title { margin-bottom: 0.5rem; padding-bottom: 0.5rem; }
+  .account__nav { display: flex; overflow-x: auto; padding-bottom: 0.25rem; }
+  .account__nav li { flex: none; }
+  .account__nav a, .account__nav span, .account__nav button { padding: 0.6rem 0.9rem; white-space: nowrap; }
+  .account__content { padding-left: 0; border-left: 0; }
+}

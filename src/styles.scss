@@ -21,6 +21,7 @@
 	--surface: #ffffff;
 	--field: #fbfcff;
 
+	--font-display: 'Bricolage Grotesque Variable', 'Inter Variable', Inter, sans-serif;
 	--brand-blue: #5f7bd6;
 	--azulina: #7590e4;
 	--azulina-strong: #4a62b5;
@@ -68,6 +69,15 @@ input,
 select,
 textarea {
 	font: inherit;
+}
+
+/* Títulos con Bricolage Grotesque: personalidad en lo destacado, Inter para leer. */
+h1,
+h2,
+h3,
+.font-display {
+	font-family: var(--font-display);
+	letter-spacing: -0.02em;
 }
 
 :focus-visible {

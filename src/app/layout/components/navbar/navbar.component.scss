@@ -19,7 +19,7 @@
 
 .brand { display: inline-flex; align-items: center; gap: 0.7rem; color: #fff; text-decoration: none; }
 .brand__mark { width: 2.25rem; }
-.brand__name { font-size: 0.95rem; font-weight: 700; letter-spacing: -0.01em; white-space: nowrap; }
+.brand__name { font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; letter-spacing: -0.02em; white-space: nowrap; }
 
 .navbar__search { position: relative; display: flex; align-items: center; max-width: 25rem; }
 .navbar__search-icon { position: absolute; z-index: 1; left: 0.9rem; color: rgb(255 255 255 / 0.8); pointer-events: none; }

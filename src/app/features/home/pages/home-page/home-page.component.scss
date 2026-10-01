@@ -229,7 +229,8 @@
 
 .category__name {
   max-width: 100%;
-  font-size: 1rem;
+  font-family: var(--font-display);
+  font-size: 1.0625rem;
   font-weight: 700;
   overflow-wrap: anywhere;
 }

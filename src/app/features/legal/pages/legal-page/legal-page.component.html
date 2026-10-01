@@ -18,7 +18,7 @@
             <li><strong>Titular:</strong> {{ info.owner }}</li>
             <li><strong>NIF:</strong> {{ info.taxId }}</li>
             <li><strong>Domicilio:</strong> {{ info.address }}</li>
-            <li><strong>Correo electrónico:</strong> {{ info.email }}</li>
+            <li><strong>Correo electrónico:</strong> <a [href]="'mailto:' + info.email">{{ info.email }}</a></li>
           </ul>
 
           <h2>Uso del sitio</h2>

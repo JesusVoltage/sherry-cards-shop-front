@@ -1,0 +1,264 @@
+<div #top class="anchor" aria-hidden="true"></div>
+<a class="back-link" routerLink="/controlpanel/productos"><svg lucideArrowLeft [size]="14" aria-hidden="true"></svg>Productos</a>
+
+<header class="page-head">
+  <div>
+    <h1>{{ productId() === null ? 'Nuevo producto' : (form.controls.name.value || 'Editar producto') }}</h1>
+    <p>{{ productId() === null ? 'Rellena la ficha, añade fotos y al menos una variante.' : 'Los cambios se publican al guardar.' }}</p>
+  </div>
+</header>
+
+@if (loadError(); as message) {
+  <div class="card state" role="alert">
+    <p>{{ message }}</p>
+    <a class="btn btn--secondary" routerLink="/controlpanel/productos">Volver a productos</a>
+  </div>
+} @else if (loading()) {
+  <div class="card" aria-busy="true" aria-label="Cargando producto">
+    @for (placeholder of [1, 2, 3]; track placeholder) {
+      <div class="skeleton block-skeleton" aria-hidden="true"></div>
+    }
+  </div>
+} @else {
+  @if (notice(); as message) {
+    <p class="notice notice--success" role="status">{{ message }}</p>
+  }
+  @if (error(); as message) {
+    <p class="notice notice--error" role="alert">{{ message }}</p>
+  }
+
+  <form [formGroup]="form" (ngSubmit)="submit()" [attr.aria-busy]="saving()" novalidate>
+    <div class="layout">
+      <div class="layout__main">
+        <section class="card" aria-labelledby="info-title">
+          <h2 id="info-title">Información</h2>
+          <div class="grid">
+            <div class="field span-2">
+              <label for="name">Nombre</label>
+              <input id="name" formControlName="name" maxlength="200" placeholder="Caja de sobres EB-05 (Español)"
+                [attr.aria-invalid]="invalid('name')" />
+              @if (errorFor('name'); as message) { <p class="field-error">{{ message }}</p> }
+            </div>
+            <div class="field span-2">
+              <label for="slug">Dirección web (slug) <span class="optional">opcional</span></label>
+              <input id="slug" formControlName="slug" maxlength="200" [placeholder]="slugPreview() || 'se-genera-del-nombre'"
+                [attr.aria-invalid]="invalid('slug')" />
+              @if (errorFor('slug'); as message) {
+                <p class="field-error">{{ message }}</p>
+              } @else {
+                <p class="field-hint">Si lo dejas vacío se genera a partir del nombre.</p>
+              }
+            </div>
+            <div class="field span-2">
+              <label for="description">Descripción <span class="optional">opcional</span></label>
+              <textarea id="description" formControlName="description" rows="6" maxlength="4000"
+                placeholder="Qué incluye, edición, idioma, estado…" [attr.aria-invalid]="invalid('description')"></textarea>
+              @if (errorFor('description'); as message) { <p class="field-error">{{ message }}</p> }
+            </div>
+          </div>
+        </section>
+
+        <section class="card" aria-labelledby="images-title">
+          <div class="card__head">
+            <h2 id="images-title">Imágenes</h2>
+            <span class="counter">{{ images().length }} / {{ maxImages }}</span>
+          </div>
+
+          <div class="dropzone" [class.is-dragging]="dragging()" (dragover)="$event.preventDefault(); dragging.set(true)"
+            (dragleave)="dragging.set(false)" (drop)="drop($event)">
+            <svg lucideImagePlus [size]="26" aria-hidden="true"></svg>
+            <p><strong>Arrastra aquí las fotos</strong> o</p>
+            <label class="btn btn--secondary btn--sm">
+              Elegir archivos
+              <input #files type="file" accept="image/jpeg,image/png,image/webp" multiple (change)="chooseFiles(files)" />
+            </label>
+            <small>JPG, PNG o WebP · máximo 5 MB cada una · la primera es la portada</small>
+          </div>
+          @if (imageError(); as message) {
+            <p class="field-error" role="alert">{{ message }}</p>
+          }
+
+          @if (images().length > 0) {
+            <ol class="gallery">
+              @for (image of images(); track image.key; let i = $index, first = $first, last = $last) {
+                <li class="tile" [class.is-uploading]="image.uploading">
+                  <div class="tile__media">
+                    @if (image.uploading) {
+                      <span class="spinner" aria-label="Subiendo imagen"></span>
+                    } @else {
+                      <img [src]="image.url" [alt]="image.altText || ''" />
+                    }
+                    @if (first && !image.uploading) { <span class="tile__badge">Portada</span> }
+                    <button type="button" class="tile__remove" (click)="removeImage(image.key)" aria-label="Quitar imagen"
+                      [disabled]="image.uploading">
+                      <svg lucideX [size]="14" aria-hidden="true"></svg>
+                    </button>
+                  </div>
+                  <input class="tile__alt" type="text" maxlength="200" placeholder="Texto alternativo" [value]="image.altText ?? ''"
+                    (input)="setAltText(image.key, $any($event.target).value)" [disabled]="image.uploading"
+                    aria-label="Texto alternativo de la imagen" />
+                  <div class="tile__move">
+                    <button type="button" (click)="moveImage(i, -1)" [disabled]="first || image.uploading" aria-label="Mover a la izquierda">
+                      <svg lucideChevronLeft [size]="14" aria-hidden="true"></svg>
+                    </button>
+                    <button type="button" (click)="moveImage(i, 1)" [disabled]="last || image.uploading" aria-label="Mover a la derecha">
+                      <svg lucideChevronRight [size]="14" aria-hidden="true"></svg>
+                    </button>
+                  </div>
+                </li>
+              }
+            </ol>
+          }
+
+          <div class="url-row">
+            <svg lucideLink [size]="15" aria-hidden="true"></svg>
+            <input type="url" [formControl]="imageUrl" placeholder="…o pega la URL de una imagen (https://)"
+              (keydown.enter)="$event.preventDefault(); addImageUrl()" aria-label="URL de imagen" />
+            <button type="button" class="btn btn--soft btn--sm" (click)="addImageUrl()">Añadir</button>
+          </div>
+          @if (imageUrl.invalid && imageUrl.touched) { <p class="field-error">La URL debe empezar por https://</p> }
+        </section>
+
+        <section class="card" aria-labelledby="variants-title" formArrayName="variants">
+          <div class="card__head">
+            <h2 id="variants-title">Variantes</h2>
+            <button type="button" class="btn btn--soft btn--sm" (click)="addVariant()">
+              <svg lucidePlus [size]="14" aria-hidden="true"></svg>Añadir variante
+            </button>
+          </div>
+          <p class="hint">Cada variante es lo que se compra: un idioma, una edición, un color… con su precio y su stock.</p>
+
+          @for (variant of variants.controls; track variant; let i = $index) {
+            <fieldset class="variant" [formGroupName]="i">
+              <legend>Variante {{ i + 1 }}</legend>
+              @if (variants.length > 1) {
+                <button type="button" class="variant__remove" (click)="removeVariant(i)" aria-label="Eliminar variante {{ i + 1 }}">
+                  <svg lucideTrash2 [size]="15" aria-hidden="true"></svg>
+                </button>
+              }
+              <div class="grid grid--variant">
+                <div class="field span-2">
+                  <label [for]="'v-name-' + i">Nombre</label>
+                  <input [id]="'v-name-' + i" formControlName="name" maxlength="150" placeholder="Español"
+                    [attr.aria-invalid]="invalid('variants.' + i + '.name')" />
+                  @if (errorFor('variants.' + i + '.name'); as message) { <p class="field-error">{{ message }}</p> }
+                </div>
+                <div class="field span-2">
+                  <label [for]="'v-sku-' + i">SKU <span class="optional">opcional</span></label>
+                  <input [id]="'v-sku-' + i" formControlName="sku" maxlength="64" placeholder="Automático"
+                    [attr.aria-invalid]="invalid('variants.' + i + '.sku')" />
+                  @if (errorFor('variants.' + i + '.sku'); as message) { <p class="field-error">{{ message }}</p> }
+                </div>
+                <div class="field">
+                  <label [for]="'v-price-' + i">Precio (€)</label>
+                  <input [id]="'v-price-' + i" type="number" inputmode="decimal" min="0" step="0.01" formControlName="price"
+                    [attr.aria-invalid]="invalid('variants.' + i + '.price')" />
+                  @if (errorFor('variants.' + i + '.price'); as message) { <p class="field-error">{{ message }}</p> }
+                </div>
+                <div class="field">
+                  <label [for]="'v-compare-' + i">Antes (€) <span class="optional">opc.</span></label>
+                  <input [id]="'v-compare-' + i" type="number" inputmode="decimal" min="0" step="0.01" formControlName="compareAtPrice"
+                    [attr.aria-invalid]="invalid('variants.' + i + '.compareAtPrice')" />
+                  @if (errorFor('variants.' + i + '.compareAtPrice'); as message) { <p class="field-error">{{ message }}</p> }
+                </div>
+                <div class="field">
+                  <label [for]="'v-stock-' + i">Stock</label>
+                  <input [id]="'v-stock-' + i" type="number" inputmode="numeric" min="0" step="1" formControlName="stockQuantity"
+                    [attr.aria-invalid]="invalid('variants.' + i + '.stockQuantity')" />
+                  @if (errorFor('variants.' + i + '.stockQuantity'); as message) { <p class="field-error">{{ message }}</p> }
+                </div>
+                <div class="field">
+                  <label [for]="'v-vat-' + i">IVA (%)</label>
+                  <input [id]="'v-vat-' + i" type="number" inputmode="decimal" min="0" max="100" step="0.01" formControlName="vatRate"
+                    [attr.aria-invalid]="invalid('variants.' + i + '.vatRate')" />
+                  @if (errorFor('variants.' + i + '.vatRate'); as message) { <p class="field-error">{{ message }}</p> }
+                </div>
+                <div class="field">
+                  <label [for]="'v-weight-' + i">Peso (g) <span class="optional">opc.</span></label>
+                  <input [id]="'v-weight-' + i" type="number" inputmode="numeric" min="1" step="1" formControlName="weightGrams"
+                    [attr.aria-invalid]="invalid('variants.' + i + '.weightGrams')" />
+                  @if (errorFor('variants.' + i + '.weightGrams'); as message) { <p class="field-error">{{ message }}</p> }
+                </div>
+                <label class="check variant__active">
+                  <input type="checkbox" formControlName="active" /> A la venta
+                </label>
+              </div>
+            </fieldset>
+          }
+        </section>
+      </div>
+
+      <aside class="layout__side">
+        <section class="card" aria-labelledby="publish-title">
+          <h2 id="publish-title">Publicación</h2>
+          <div class="field">
+            <label for="status">Estado</label>
+            <select id="status" formControlName="status" [attr.aria-invalid]="invalid('status')">
+              @for (status of options()?.statuses ?? []; track status.code) {
+                <option [value]="status.code">{{ status.name }}</option>
+              }
+            </select>
+            @if (errorFor('status'); as message) {
+              <p class="field-error">{{ message }}</p>
+            } @else {
+              <p class="field-hint">Solo los productos activos se mostrarán en la tienda.</p>
+            }
+          </div>
+        </section>
+
+        <section class="card" aria-labelledby="organize-title">
+          <h2 id="organize-title">Organización</h2>
+          <div class="field">
+            <label for="category">Categoría</label>
+            <select id="category" formControlName="categoryId" [attr.aria-invalid]="invalid('categoryId')">
+              <option [ngValue]="null" disabled>Elige una categoría</option>
+              @for (category of options()?.categories ?? []; track category.id) {
+                <option [ngValue]="category.id">{{ category.path }}{{ category.active ? '' : ' (oculta)' }}</option>
+              }
+            </select>
+            @if (errorFor('categoryId'); as message) { <p class="field-error">{{ message }}</p> }
+          </div>
+          <div class="field">
+            <label for="type">Tipo</label>
+            <select id="type" formControlName="type" [attr.aria-invalid]="invalid('type')">
+              @for (type of options()?.types ?? []; track type.code) {
+                <option [value]="type.code">{{ type.name }}</option>
+              }
+            </select>
+            @if (errorFor('type'); as message) { <p class="field-error">{{ message }}</p> }
+          </div>
+          <div class="field">
+            <label for="release">Fecha de lanzamiento <span class="optional">opcional</span></label>
+            <input id="release" type="date" formControlName="releaseDate" />
+          </div>
+        </section>
+
+        @if (productId() !== null) {
+          <section class="card danger-zone" aria-labelledby="danger-title">
+            <h2 id="danger-title">Borrar</h2>
+            @if (confirmDelete()) {
+              <p>¿Seguro? Esto no se puede deshacer. Si tiene pedidos, archívalo en su lugar.</p>
+              <div class="danger-zone__actions">
+                <button type="button" class="btn btn--danger btn--sm" (click)="remove()" [disabled]="deleting()" [attr.aria-busy]="deleting()">
+                  {{ deleting() ? 'Borrando…' : 'Sí, borrar' }}
+                </button>
+                <button type="button" class="btn btn--secondary btn--sm" (click)="confirmDelete.set(false)" [disabled]="deleting()">Cancelar</button>
+              </div>
+            } @else {
+              <button type="button" class="btn btn--secondary btn--sm" (click)="confirmDelete.set(true)">
+                <svg lucideTrash2 [size]="14" aria-hidden="true"></svg>Borrar producto
+              </button>
+            }
+          </section>
+        }
+      </aside>
+    </div>
+
+    <div class="actions">
+      <a class="btn btn--secondary" routerLink="/controlpanel/productos">Cancelar</a>
+      <button class="btn btn--primary" type="submit" [disabled]="saving() || uploading()" [attr.aria-busy]="saving()">
+        {{ saving() ? 'Guardando…' : uploading() ? 'Subiendo imágenes…' : (productId() === null ? 'Crear producto' : 'Guardar cambios') }}
+      </button>
+    </div>
+  </form>
+}

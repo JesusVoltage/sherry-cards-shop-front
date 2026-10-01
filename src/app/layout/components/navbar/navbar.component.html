@@ -19,6 +19,11 @@
     </nav>
 
     <div class="navbar__actions">
+      @if (auth.user()?.role === adminRole) {
+        <a class="icon-action" routerLink="/controlpanel" (click)="closeMenu()" aria-label="Panel de control" title="Panel de control">
+          <svg lucideLayoutDashboard [size]="19" aria-hidden="true"></svg>
+        </a>
+      }
       <a class="icon-action" [routerLink]="auth.isAuthenticated() ? '/cuenta' : '/login'" (click)="closeMenu()"
         [attr.aria-label]="auth.user() ? 'Mi cuenta: ' + auth.user()?.username : 'Iniciar sesión'"
         [title]="auth.user() ? auth.user()?.username : 'Iniciar sesión'">

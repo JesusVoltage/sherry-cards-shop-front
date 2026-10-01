@@ -1,0 +1,39 @@
+<div class="panel">
+  <aside class="panel__aside">
+    <a class="panel__brand" routerLink="/controlpanel" aria-label="Panel de control, resumen">
+      <scw-brand-logo class="panel__mark" />
+      <span>Panel<small>Sherry Card Shop</small></span>
+    </a>
+
+    <nav class="panel__nav" aria-label="Secciones del panel">
+      <a routerLink="/controlpanel" routerLinkActive="is-active" [routerLinkActiveOptions]="{ exact: true }">
+        <svg lucideLayoutDashboard [size]="18" aria-hidden="true"></svg>Resumen
+      </a>
+      <a routerLink="/controlpanel/productos" routerLinkActive="is-active">
+        <svg lucidePackage [size]="18" aria-hidden="true"></svg>Productos
+      </a>
+      <span class="is-disabled" aria-disabled="true">
+        <svg lucideFolderTree [size]="18" aria-hidden="true"></svg>Categorías<small>Pronto</small>
+      </span>
+      <span class="is-disabled" aria-disabled="true">
+        <svg lucideUsers [size]="18" aria-hidden="true"></svg>Usuarios<small>Pronto</small>
+      </span>
+    </nav>
+
+    <div class="panel__footer">
+      <a class="panel__shop" routerLink="/">
+        <svg lucideStore [size]="16" aria-hidden="true"></svg>Ver la tienda
+      </a>
+      @if (user(); as current) {
+        <p class="panel__user"><span>{{ current.nombre }}</span>{{ current.email }}</p>
+      }
+      <button type="button" class="panel__logout" (click)="logout()" [disabled]="loggingOut()" [attr.aria-busy]="loggingOut()">
+        <svg lucideLogOut [size]="16" aria-hidden="true"></svg>{{ loggingOut() ? 'Saliendo…' : 'Cerrar sesión' }}
+      </button>
+    </div>
+  </aside>
+
+  <main class="panel__content">
+    <router-outlet />
+  </main>
+</div>

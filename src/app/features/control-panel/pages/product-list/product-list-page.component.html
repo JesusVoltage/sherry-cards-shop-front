@@ -1,0 +1,104 @@
+<header class="page-head">
+  <div>
+    <h1>Productos</h1>
+    <p>{{ result()?.totalItems ?? 0 }} {{ result()?.totalItems === 1 ? 'producto' : 'productos' }} en el catálogo</p>
+  </div>
+  <a class="btn btn--primary" routerLink="/controlpanel/productos/nuevo">
+    <svg lucidePlus [size]="16" aria-hidden="true"></svg>Nuevo producto
+  </a>
+</header>
+
+<section class="filters card" aria-label="Filtros">
+  <label class="filters__search">
+    <svg lucideSearch [size]="16" aria-hidden="true"></svg>
+    <span class="visually-hidden">Buscar</span>
+    <input type="search" placeholder="Buscar por nombre o SKU" [value]="filters().search"
+      (input)="search($any($event.target).value)" />
+  </label>
+  <label>
+    <span class="visually-hidden">Categoría</span>
+    <select (change)="filterCategory($any($event.target).value)">
+      <option value="">Todas las categorías</option>
+      @for (category of options()?.categories ?? []; track category.id) {
+        <option [value]="category.id" [selected]="filters().categoryId === category.id">{{ category.path }}</option>
+      }
+    </select>
+  </label>
+  <label>
+    <span class="visually-hidden">Estado</span>
+    <select (change)="filterStatus($any($event.target).value)">
+      <option value="">Todos los estados</option>
+      @for (status of options()?.statuses ?? []; track status.code) {
+        <option [value]="status.code" [selected]="filters().status === status.code">{{ status.name }}</option>
+      }
+    </select>
+  </label>
+</section>
+
+@if (error(); as message) {
+  <div class="card state" role="alert">
+    <p>{{ message }}</p>
+    <button class="btn btn--secondary" type="button" (click)="reload()">Reintentar</button>
+  </div>
+} @else if (result(); as page) {
+  @if (page.items.length === 0) {
+    <div class="card state">
+      <svg lucidePackage [size]="28" aria-hidden="true"></svg>
+      @if (filters().search || filters().categoryId !== null || filters().status) {
+        <p>Ningún producto coincide con los filtros.</p>
+      } @else {
+        <p>Todavía no hay productos. ¡Crea el primero!</p>
+        <a class="btn btn--primary" routerLink="/controlpanel/productos/nuevo">Nuevo producto</a>
+      }
+    </div>
+  } @else {
+    <div class="table card" [class.is-loading]="loading()" role="table" aria-label="Productos">
+      <div class="table__row table__head" role="row">
+        <span role="columnheader">Producto</span>
+        <span role="columnheader">Categoría</span>
+        <span role="columnheader">Estado</span>
+        <span role="columnheader" class="num">Precio</span>
+        <span role="columnheader" class="num">Stock</span>
+        <span role="columnheader">Actualizado</span>
+      </div>
+      @for (product of page.items; track product.id) {
+        <a class="table__row" role="row" [routerLink]="['/controlpanel/productos', product.id]">
+          <span class="product" role="cell">
+            @if (product.imageUrl) {
+              <img [src]="product.imageUrl" alt="" loading="lazy" />
+            } @else {
+              <span class="product__placeholder" aria-hidden="true"><svg lucidePackage [size]="18"></svg></span>
+            }
+            <span class="product__text"><strong>{{ product.name }}</strong><small>{{ product.slug }}</small></span>
+          </span>
+          <span role="cell" class="muted">{{ product.categoryName }}</span>
+          <span role="cell"><span class="status status--{{ product.status }}">{{ statusLabels[product.status] }}</span></span>
+          <span role="cell" class="num">
+            @if (product.variantCount > 1) { <small>desde</small> }
+            {{ eur(product.minPrice) }}
+          </span>
+          <span role="cell" class="num" [class.danger]="product.totalStock === 0">{{ product.totalStock }}</span>
+          <span role="cell" class="muted">{{ date(product.updatedAt) }}</span>
+        </a>
+      }
+    </div>
+
+    @if (page.totalPages > 1) {
+      <nav class="pager" aria-label="Páginas">
+        <button class="btn btn--secondary btn--sm" type="button" [disabled]="page.page === 0 || loading()" (click)="goTo(page.page - 1)">
+          <svg lucideChevronLeft [size]="16" aria-hidden="true"></svg>Anterior
+        </button>
+        <span>Página {{ page.page + 1 }} de {{ page.totalPages }}</span>
+        <button class="btn btn--secondary btn--sm" type="button" [disabled]="page.page + 1 >= page.totalPages || loading()" (click)="goTo(page.page + 1)">
+          Siguiente<svg lucideChevronRight [size]="16" aria-hidden="true"></svg>
+        </button>
+      </nav>
+    }
+  }
+} @else {
+  <div class="card" aria-busy="true" aria-label="Cargando productos">
+    @for (placeholder of [1, 2, 3, 4]; track placeholder) {
+      <div class="skeleton row-skeleton" aria-hidden="true"></div>
+    }
+  </div>
+}

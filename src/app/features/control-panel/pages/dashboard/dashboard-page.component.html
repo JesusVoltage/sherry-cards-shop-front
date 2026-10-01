@@ -1,0 +1,56 @@
+<header class="page-head">
+  <div>
+    <h1>Hola{{ user()?.nombre ? ', ' + user()?.nombre : '' }}</h1>
+    <p>Así está la tienda ahora mismo.</p>
+  </div>
+  <a class="btn btn--primary" routerLink="/controlpanel/productos/nuevo">
+    <svg lucidePlus [size]="16" aria-hidden="true"></svg>Nuevo producto
+  </a>
+</header>
+
+@if (error(); as message) {
+  <div class="card state" role="alert">
+    <p>{{ message }}</p>
+    <button class="btn btn--secondary" type="button" (click)="load()">Reintentar</button>
+  </div>
+} @else if (dashboard(); as data) {
+  <section class="stats" aria-label="Resumen">
+    <a class="stat card" routerLink="/controlpanel/productos">
+      <span class="stat__icon"><svg lucidePackage [size]="18" aria-hidden="true"></svg></span>
+      <span class="stat__label">Productos</span>
+      <strong>{{ data.products.total }}</strong>
+      <span class="stat__detail">{{ data.products.active }} {{ data.products.active === 1 ? 'activo' : 'activos' }} · {{ data.products.draft }} en borrador · {{ data.products.archived }} {{ data.products.archived === 1 ? 'archivado' : 'archivados' }}</span>
+    </a>
+    <div class="stat card">
+      <span class="stat__icon"><svg lucideFolderTree [size]="18" aria-hidden="true"></svg></span>
+      <span class="stat__label">Categorías</span>
+      <strong>{{ data.categories }}</strong>
+      <span class="stat__detail">Gestión desde el panel muy pronto</span>
+    </div>
+    <div class="stat card">
+      <span class="stat__icon"><svg lucideUsers [size]="18" aria-hidden="true"></svg></span>
+      <span class="stat__label">Usuarios</span>
+      <strong>{{ data.users }}</strong>
+      <span class="stat__detail">{{ data.admins }} {{ data.admins === 1 ? 'administrador' : 'administradores' }}</span>
+    </div>
+    <div class="stat card">
+      <span class="stat__icon"><svg lucideImagePlus [size]="18" aria-hidden="true"></svg></span>
+      <span class="stat__label">Imágenes</span>
+      @if (data.storage.enabled) {
+        <strong>{{ bytes(data.storage.usedBytes) }}</strong>
+        <span class="meter" role="meter" aria-label="Almacenamiento usado" [attr.aria-valuenow]="storagePercent(data)"
+          aria-valuemin="0" aria-valuemax="100"><span [style.width.%]="storagePercent(data)"></span></span>
+        <span class="stat__detail">de {{ bytes(data.storage.limitBytes) }} gratuitos en Cloudflare R2</span>
+      } @else {
+        <strong class="stat__muted">Sin configurar</strong>
+        <span class="stat__detail">Faltan las claves de Cloudflare R2 en Railway</span>
+      }
+    </div>
+  </section>
+} @else {
+  <section class="stats" aria-label="Cargando resumen" aria-busy="true">
+    @for (placeholder of [1, 2, 3, 4]; track placeholder) {
+      <div class="stat card skeleton" aria-hidden="true"></div>
+    }
+  </section>
+}

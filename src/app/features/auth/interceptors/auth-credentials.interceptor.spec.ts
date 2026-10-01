@@ -30,7 +30,7 @@ describe('authCredentialsInterceptor', () => {
 
   it('adds cookies and disables transfer caching only for the configured session API', () => {
     setUp(false);
-    const credentialed = [`${base}/api/auth/me`, `${base}/api/account/addresses`];
+    const credentialed = [`${base}/api/auth/me`, `${base}/api/account/addresses`, `${base}/api/admin/products`];
     expectCredentials([...credentialed, `${base}/api/categories`, 'https://example.com/api/auth/me'], credentialed);
   });
 

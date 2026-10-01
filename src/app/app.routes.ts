@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { AdminGuard } from './features/auth/guards/admin.guard';
 import { AuthGuard } from './features/auth/guards/auth.guard';
 import { SiteAccessGuard } from './features/auth/guards/site-access.guard';
 
@@ -44,6 +45,44 @@ export const routes: Routes = [
 		loadComponent: () => import('./features/auth/pages/admin-login-page/admin-login-page.component').then(
 			(module) => module.AdminLoginPageComponent
 		)
+	},
+	{
+		// Sección secreta: sin rol ADMIN la ruta no existe y cae en el comodín final.
+		path: 'controlpanel',
+		canMatch: [AdminGuard],
+		loadComponent: () => import('./features/control-panel/layout/control-panel-layout.component').then(
+			(module) => module.ControlPanelLayoutComponent
+		),
+		children: [
+			{
+				path: '',
+				title: 'Panel de control · Sherry Card Shop',
+				loadComponent: () => import('./features/control-panel/pages/dashboard/dashboard-page.component').then(
+					(module) => module.DashboardPageComponent
+				)
+			},
+			{
+				path: 'productos',
+				title: 'Productos · Panel de control',
+				loadComponent: () => import('./features/control-panel/pages/product-list/product-list-page.component').then(
+					(module) => module.ProductListPageComponent
+				)
+			},
+			{
+				path: 'productos/nuevo',
+				title: 'Nuevo producto · Panel de control',
+				loadComponent: () => import('./features/control-panel/pages/product-form/product-form-page.component').then(
+					(module) => module.ProductFormPageComponent
+				)
+			},
+			{
+				path: 'productos/:id',
+				title: 'Editar producto · Panel de control',
+				loadComponent: () => import('./features/control-panel/pages/product-form/product-form-page.component').then(
+					(module) => module.ProductFormPageComponent
+				)
+			}
+		]
 	},
 	{
 		path: '',

@@ -6,6 +6,9 @@ export const serverRoutes: ServerRoute[] = [
   { path: 'registro', renderMode: RenderMode.Client },
   { path: 'cuenta', renderMode: RenderMode.Client },
   { path: 'cuenta/**', renderMode: RenderMode.Client },
+  { path: 'admin', renderMode: RenderMode.Client },
+  { path: 'controlpanel', renderMode: RenderMode.Client },
+  { path: 'controlpanel/**', renderMode: RenderMode.Client },
   // Con la tienda cerrada lo que se ve depende de la sesión, que solo existe en el navegador.
   environment.siteClosed
     ? { path: '**', renderMode: RenderMode.Client }

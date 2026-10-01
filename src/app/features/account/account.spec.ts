@@ -99,10 +99,14 @@ describe('Account area', () => {
     const fixture = TestBed.createComponent(AccountDetailsComponent);
     fixture.detectChanges();
     const element: HTMLElement = fixture.nativeElement;
+    expect(element.querySelector('form')).toBeNull();
+    expect(element.textContent).toContain('ana@example.com');
+    element.querySelector<HTMLButtonElement>('#edit-profile')!.click();
+    fixture.detectChanges();
     expect(element.querySelector<HTMLInputElement>('#profile-email')!.readOnly).toBeTrue();
     fillInputs(element, { 'profile-name': ' Ana María ' });
     fixture.detectChanges();
-    element.querySelectorAll('form')[0].dispatchEvent(new Event('submit'));
+    element.querySelector('form')!.dispatchEvent(new Event('submit'));
 
     const request = http.expectOne({ method: 'PUT', url: `${api}/account/profile` });
     expect(request.request.withCredentials).toBeTrue();
@@ -111,15 +115,18 @@ describe('Account area', () => {
     fixture.detectChanges();
     expect(TestBed.inject(AuthService).user()?.nombre).toBe('Ana María');
     expect(element.textContent).toContain('Tus datos se han guardado');
+    expect(element.querySelector('form')).toBeNull();
   });
 
   it('shows the API reason when the new password is rejected', () => {
     const fixture = TestBed.createComponent(AccountDetailsComponent);
     fixture.detectChanges();
     const element: HTMLElement = fixture.nativeElement;
+    element.querySelector<HTMLButtonElement>('#toggle-password')!.click();
+    fixture.detectChanges();
     fillInputs(element, { 'password-current': 'actual-123', 'password-new': 'qwertyuiop123', 'password-confirm': 'qwertyuiop123' });
     fixture.detectChanges();
-    element.querySelectorAll('form')[1].dispatchEvent(new Event('submit'));
+    element.querySelector('form')!.dispatchEvent(new Event('submit'));
 
     const request = http.expectOne({ method: 'PUT', url: `${api}/account/password` });
     expect(request.request.body).toEqual({ currentPassword: 'actual-123', newPassword: 'qwertyuiop123' });

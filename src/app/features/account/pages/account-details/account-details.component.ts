@@ -28,6 +28,8 @@ export class AccountDetailsComponent {
   protected readonly user = this.auth.user;
   protected readonly errorFor = accountFieldError;
 
+  protected readonly editing = signal(false);
+  protected readonly passwordOpen = signal(false);
   protected readonly profileSaving = signal(false);
   protected readonly profileError = signal<string | null>(null);
   protected readonly profileSuccess = signal<string | null>(null);
@@ -50,6 +52,29 @@ export class AccountDetailsComponent {
   constructor() {
     this.resetProfile();
     this.syncCurrentPasswordRule();
+  }
+
+  protected startEditing(): void {
+    this.resetProfile();
+    this.profileError.set(null);
+    this.profileSuccess.set(null);
+    this.editing.set(true);
+  }
+
+  protected cancelEditing(): void {
+    this.resetProfile();
+    this.profileError.set(null);
+    this.editing.set(false);
+  }
+
+  protected togglePassword(): void {
+    const open = !this.passwordOpen();
+    this.passwordForm.reset();
+    this.showPasswords.set(false);
+    this.passwordError.set(null);
+    if (open) this.passwordSuccess.set(null);
+    this.syncCurrentPasswordRule();
+    this.passwordOpen.set(open);
   }
 
   protected resetProfile(): void {
@@ -77,6 +102,7 @@ export class AccountDetailsComponent {
       next: (user) => {
         this.auth.updateCurrentUser(user);
         this.resetProfile();
+        this.editing.set(false);
         this.profileSuccess.set('Tus datos se han guardado.');
       },
       error: (error: unknown) => {
@@ -109,6 +135,7 @@ export class AccountDetailsComponent {
         this.auth.updateCurrentUser(user);
         this.passwordForm.reset();
         this.showPasswords.set(false);
+        this.passwordOpen.set(false);
         this.syncCurrentPasswordRule();
         this.passwordSuccess.set(hadPassword
           ? 'Contraseña actualizada. Hemos cerrado la sesión en tus otros dispositivos.'

@@ -1,62 +1,7 @@
-/* La tabla se adapta al hueco real del panel, que depende de si se ve el menú lateral. */
-:host { container-type: inline-size; }
-
-.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-
-.filters { display: grid; grid-template-columns: minmax(0, 2fr) repeat(2, minmax(0, 1fr)); gap: 0.75rem; margin-bottom: 1rem; padding: 0.75rem; }
-.filters label { position: relative; display: block; }
-.filters input, .filters select {
-  width: 100%;
-  min-height: 2.6rem;
-  padding: 0 0.85rem;
-  border: 1px solid var(--line-strong);
-  border-radius: var(--radius);
-  background: var(--field);
-  color: var(--text);
-  font: inherit;
-  font-size: 0.875rem;
-}
-.filters input { padding-left: 2.4rem; }
-.filters input:focus, .filters select:focus { border-color: var(--azulina); outline: none; box-shadow: var(--focus-ring); }
-.filters__search svg { position: absolute; top: 50%; left: 0.85rem; color: var(--muted); transform: translateY(-50%); pointer-events: none; }
-
-.table { padding: 0.25rem 0; overflow: hidden; transition: opacity 0.15s; }
-.table.is-loading { opacity: 0.55; }
-.table__row {
-  display: grid;
-  grid-template-columns: minmax(0, 2.6fr) minmax(0, 1.2fr) 7rem 6.5rem 4.5rem 7rem;
-  align-items: center;
-  gap: 1rem;
-  padding: 0.7rem 1.25rem;
-  border-top: 1px solid var(--line);
-  color: var(--text);
-  font-size: 0.875rem;
-  text-decoration: none;
-}
-.table__head { border-top: 0; color: var(--muted); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
-a.table__row:hover { background: var(--azulina-soft); }
-.num { text-align: right; font-variant-numeric: tabular-nums; }
-.num small { color: var(--muted); font-size: 0.7rem; }
-.muted { color: var(--muted); }
-.danger { color: var(--danger); font-weight: 600; }
-
-.product { display: flex; min-width: 0; align-items: center; gap: 0.85rem; }
-.product img, .product__placeholder { flex: none; width: 2.75rem; height: 2.75rem; border-radius: 0.6rem; background: var(--bg); object-fit: cover; }
-.product__placeholder { display: grid; place-items: center; color: var(--muted); }
-.product__text { display: grid; min-width: 0; }
-.product__text strong { overflow: hidden; color: var(--ink); text-overflow: ellipsis; white-space: nowrap; }
-.product__text small { overflow: hidden; color: var(--muted); font-size: 0.75rem; text-overflow: ellipsis; white-space: nowrap; }
-
-.pager { display: flex; align-items: center; justify-content: center; gap: 1rem; margin-top: 1.25rem; color: var(--muted); font-size: 0.875rem; }
-.pager .btn { display: inline-flex; align-items: center; gap: 0.25rem; }
-
-.row-skeleton { height: 3.25rem; margin: 0.5rem 0; }
+.table__row { grid-template-columns: minmax(0, 2.6fr) minmax(0, 1.2fr) 7rem 6.5rem 4.5rem 7rem; }
 
 @container (max-width: 48rem) {
-  .filters { grid-template-columns: minmax(0, 1fr); }
-  .table__head { display: none; }
-  .table__row { grid-template-columns: auto minmax(0, 1fr) auto; gap: 0.4rem 0.75rem; }
-  .table__row > :nth-child(1) { grid-column: 1 / -1; }
+  .table__row { grid-template-columns: auto minmax(0, 1fr) auto; }
   .table__row > :nth-child(2), .table__row > :nth-child(6) { display: none; }
   .table__row > :nth-child(3) { grid-column: 1; grid-row: 2; }
   .table__row > :nth-child(4) { grid-column: 3; grid-row: 2; }

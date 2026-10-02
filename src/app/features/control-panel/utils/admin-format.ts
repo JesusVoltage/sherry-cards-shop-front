@@ -28,3 +28,6 @@ export const STATUS_LABELS: Record<ProductStatusCode, string> = {
   ACTIVE: 'Activo',
   ARCHIVED: 'Archivado'
 };
+
+export const ROLE_LABELS: Record<string, string> = { ADMIN: 'Administrador', CLIENTE: 'Cliente' };
+export const USER_STATUS_LABELS: Record<string, string> = { ACTIVO: 'Activo', BLOQUEADO: 'Bloqueado', PENDIENTE: 'Pendiente' };

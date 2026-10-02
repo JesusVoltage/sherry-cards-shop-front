@@ -1,0 +1,12 @@
+.table__row { grid-template-columns: minmax(0, 2fr) minmax(0, 2fr) 7.5rem 6.5rem 7rem 7rem; }
+.avatar { display: grid; flex: none; width: 2.5rem; height: 2.5rem; place-items: center; border-radius: 50%; background: var(--azulina-soft); color: var(--azulina-strong); font-weight: 700; }
+.name { display: flex; min-width: 0; align-items: center; gap: 0.35rem; }
+.me { flex: none; padding: 0.05rem 0.45rem; border-radius: 999px; background: var(--azulina-soft); color: var(--azulina-strong); font-size: 0.6875rem; font-style: normal; }
+
+@container (max-width: 48rem) {
+  .table__row { grid-template-columns: auto auto minmax(0, 1fr); }
+  .table__row > :nth-child(2), .table__row > :nth-child(6) { display: none; }
+  .table__row > :nth-child(3) { grid-column: 1; grid-row: 2; }
+  .table__row > :nth-child(4) { grid-column: 2; grid-row: 2; }
+  .table__row > :nth-child(5) { grid-column: 3; grid-row: 2; font-size: 0.78rem; text-align: right; }
+}

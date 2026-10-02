@@ -18,7 +18,11 @@
 .status::before { content: ''; width: 0.4rem; height: 0.4rem; border-radius: 50%; background: currentColor; }
 .status--ACTIVE { background: var(--success-soft); color: var(--success); }
 .status--DRAFT { background: #fff7e6; color: #8a5a00; }
-.status--ARCHIVED { background: var(--bg); color: var(--muted); }
+.status--ARCHIVED, .status--PENDIENTE { background: var(--bg); color: var(--muted); }
+.status--ACTIVO { background: var(--success-soft); color: var(--success); }
+.status--BLOQUEADO { background: var(--danger-soft); color: var(--danger); }
+.role { display: inline-block; padding: 0.15rem 0.55rem; border-radius: 999px; background: var(--bg); color: var(--text-soft); font-size: 0.75rem; font-weight: 600; }
+.role--ADMIN { background: var(--ink); color: #fff; }
 
 .skeleton { border-radius: var(--radius); background: linear-gradient(90deg, var(--line) 0%, var(--bg) 50%, var(--line) 100%); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
 @keyframes shimmer { to { background-position: -200% 0; } }

@@ -21,18 +21,18 @@
       <strong>{{ data.products.total }}</strong>
       <span class="stat__detail">{{ data.products.active }} {{ data.products.active === 1 ? 'activo' : 'activos' }} · {{ data.products.draft }} en borrador · {{ data.products.archived }} {{ data.products.archived === 1 ? 'archivado' : 'archivados' }}</span>
     </a>
-    <div class="stat card">
+    <a class="stat card" routerLink="/controlpanel/categorias">
       <span class="stat__icon"><svg lucideFolderTree [size]="18" aria-hidden="true"></svg></span>
       <span class="stat__label">Categorías</span>
       <strong>{{ data.categories }}</strong>
-      <span class="stat__detail">Gestión desde el panel muy pronto</span>
-    </div>
-    <div class="stat card">
+      <span class="stat__detail">Con sus subcategorías</span>
+    </a>
+    <a class="stat card" routerLink="/controlpanel/usuarios">
       <span class="stat__icon"><svg lucideUsers [size]="18" aria-hidden="true"></svg></span>
       <span class="stat__label">Usuarios</span>
       <strong>{{ data.users }}</strong>
       <span class="stat__detail">{{ data.admins }} {{ data.admins === 1 ? 'administrador' : 'administradores' }}</span>
-    </div>
+    </a>
     <div class="stat card">
       <span class="stat__icon"><svg lucideImagePlus [size]="18" aria-hidden="true"></svg></span>
       <span class="stat__label">Imágenes</span>

@@ -97,7 +97,13 @@ export class ProductFormPageComponent implements OnInit {
     }).pipe(takeUntilDestroyed(this.destroyRef), finalize(() => this.loading.set(false))).subscribe({
       next: ({ options, product }) => {
         this.options.set(options);
-        if (product) this.fill(product);
+        if (product) {
+          this.fill(product);
+        } else {
+          // La categoría es obligatoria: un producto nuevo empieza en "Sin categoría" hasta que se clasifique.
+          const fallback = options.categories.find((category) => category.system);
+          if (fallback && this.form.controls.categoryId.value === null) this.form.controls.categoryId.setValue(fallback.id);
+        }
       },
       error: (error: unknown) => this.loadError.set(error instanceof HttpErrorResponse && error.status === 404
         ? 'Este producto ya no existe.'

@@ -83,7 +83,7 @@ export interface ProductFilters {
 }
 
 export interface CatalogOptions {
-  categories: { id: number; name: string; path: string; active: boolean }[];
+  categories: { id: number; name: string; path: string; active: boolean; system: boolean }[];
   types: { code: string; name: string }[];
   statuses: { code: ProductStatusCode; name: string }[];
 }
@@ -93,4 +93,69 @@ export interface UploadedImage {
   url: string;
   contentType: string;
   sizeBytes: number;
+}
+
+export interface AdminCategory {
+  id: number;
+  name: string;
+  slug: string;
+  description: string | null;
+  imageUrl: string | null;
+  parentId: number | null;
+  active: boolean;
+  displayOrder: number;
+  productCount: number;
+  childCount: number;
+  /** "Sin categoría": no se puede borrar, mover ni tener hijas. */
+  system: boolean;
+}
+
+export interface CategoryRequest {
+  name: string;
+  slug: string | null;
+  description: string | null;
+  imageUrl: string | null;
+  parentId: number | null;
+  active: boolean;
+}
+
+export type UserRoleCode = 'CLIENTE' | 'ADMIN' | string;
+export type UserStatusCode = 'ACTIVO' | 'BLOQUEADO' | 'PENDIENTE' | string;
+
+export interface AdminUser {
+  id: number;
+  username: string;
+  email: string;
+  nombre: string;
+  apellidos: string | null;
+  role: UserRoleCode;
+  status: UserStatusCode;
+  emailVerifiedAt: string | null;
+  lastAccessAt: string | null;
+  createdAt: string;
+  hasPassword: boolean;
+  googleLinked: boolean;
+}
+
+export interface AdminUserRequest {
+  username: string;
+  email: string;
+  nombre: string;
+  apellidos: string | null;
+  /** Obligatoria al crear; al editar, vacía conserva la actual. */
+  password: string | null;
+  role: UserRoleCode;
+  status: UserStatusCode;
+}
+
+export interface UserFilters {
+  search: string;
+  role: string | null;
+  status: string | null;
+  page: number;
+}
+
+export interface UserOptions {
+  roles: { code: UserRoleCode; name: string }[];
+  statuses: { code: UserStatusCode; name: string }[];
 }

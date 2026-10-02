@@ -1,0 +1,146 @@
+<header class="page-head">
+  <div>
+    <h1>Categorías</h1>
+    <p>Organiza el catálogo en categorías y subcategorías (hasta {{ maxDepth }} niveles).</p>
+  </div>
+  <button class="btn btn--primary" type="button" (click)="startCreate()">
+    <svg lucidePlus [size]="16" aria-hidden="true"></svg>Nueva categoría
+  </button>
+</header>
+
+@if (notice(); as message) { <p class="notice notice--success" role="status">{{ message }}</p> }
+@if (actionError(); as message) { <p class="notice notice--error" role="alert">{{ message }}</p> }
+
+<div class="layout" [class.layout--editing]="editing() !== null">
+  <section class="card tree" aria-labelledby="tree-title" [attr.aria-busy]="loading() || busy()">
+    <h2 id="tree-title" class="visually-hidden">Árbol de categorías</h2>
+    @if (loadError(); as message) {
+      <div class="state" role="alert">
+        <p>{{ message }}</p>
+        <button class="btn btn--secondary" type="button" (click)="load()">Reintentar</button>
+      </div>
+    } @else if (loading() && rows().length === 0) {
+      @for (placeholder of [1, 2, 3, 4, 5]; track placeholder) {
+        <div class="skeleton row-skeleton" aria-hidden="true"></div>
+      }
+    } @else {
+      <ul class="rows">
+        @for (row of rows(); track row.category.id) {
+          <li class="row" [class.is-selected]="editing() === row.category.id" [style.--depth]="row.depth - 1">
+            <button type="button" class="row__main" (click)="startEdit(row.category)" [attr.aria-label]="'Editar ' + row.path">
+              @if (row.category.imageUrl) {
+                <img [src]="row.category.imageUrl" alt="" loading="lazy" />
+              } @else {
+                <span class="row__icon" aria-hidden="true"><svg lucideFolderTree [size]="15"></svg></span>
+              }
+              <span class="row__text">
+                <strong>{{ row.category.name }}</strong>
+                <small>/{{ row.category.slug }} · {{ row.category.productCount }} {{ row.category.productCount === 1 ? 'producto' : 'productos' }}</small>
+              </span>
+              @if (row.category.system) { <span class="tag tag--system">Sistema</span> }
+              @if (!row.category.active) { <span class="tag">Oculta</span> }
+            </button>
+
+            @if (confirmDelete() === row.category.id) {
+              <div class="row__confirm" role="alertdialog" [attr.aria-label]="'Confirmar borrado de ' + row.category.name">
+                <span>¿Borrar?{{ row.category.productCount ? ' Sus ' + row.category.productCount + ' productos pasarán a Sin categoría.' : '' }}</span>
+                <button type="button" class="btn btn--danger btn--sm" (click)="remove(row.category)" [disabled]="busy()">Borrar</button>
+                <button type="button" class="btn btn--secondary btn--sm" (click)="confirmDelete.set(null)">No</button>
+              </div>
+            } @else {
+              <div class="row__actions">
+                <button type="button" (click)="move(row, -1)" [disabled]="busy() || row.index === 0 || row.category.system"
+                  [attr.aria-label]="'Subir ' + row.category.name" title="Subir">
+                  <svg lucideArrowUp [size]="15" aria-hidden="true"></svg>
+                </button>
+                <button type="button" (click)="move(row, 1)" [disabled]="busy() || row.index === row.siblingIds.length - 1 || row.category.system"
+                  [attr.aria-label]="'Bajar ' + row.category.name" title="Bajar">
+                  <svg lucideArrowDown [size]="15" aria-hidden="true"></svg>
+                </button>
+                <button type="button" (click)="startCreate(row.category.id)" [disabled]="row.category.system || row.depth >= maxDepth"
+                  [attr.aria-label]="'Añadir subcategoría a ' + row.category.name" title="Añadir subcategoría">
+                  <svg lucideFolderPlus [size]="15" aria-hidden="true"></svg>
+                </button>
+                <button type="button" (click)="confirmDelete.set(row.category.id)" [disabled]="row.category.system || row.category.childCount > 0"
+                  [attr.aria-label]="'Borrar ' + row.category.name"
+                  [title]="row.category.system ? 'Sin categoría no se puede borrar' : row.category.childCount > 0 ? 'Borra o mueve antes sus subcategorías' : 'Borrar'">
+                  <svg lucideTrash2 [size]="15" aria-hidden="true"></svg>
+                </button>
+              </div>
+            }
+          </li>
+        }
+      </ul>
+    }
+  </section>
+
+  <section #editor class="card editor" aria-labelledby="editor-title">
+    @if (editing() === null) {
+      <div class="editor__empty">
+        <svg lucidePencil [size]="22" aria-hidden="true"></svg>
+        <p>Elige una categoría para editarla o crea una nueva.</p>
+        <p class="muted">Al borrar una categoría, sus productos pasan a <strong>Sin categoría</strong>.</p>
+      </div>
+    } @else {
+      <div class="editor__head">
+        <h2 id="editor-title">{{ editing() === 'new' ? 'Nueva categoría' : 'Editar categoría' }}</h2>
+        <button type="button" class="icon-button" (click)="close()" aria-label="Cerrar editor"><svg lucideX [size]="16" aria-hidden="true"></svg></button>
+      </div>
+      @if (current()?.system) {
+        <p class="notice">Es la categoría del sistema para productos sin clasificar: puedes cambiar su nombre, descripción, imagen y visibilidad.</p>
+      }
+      @if (formError(); as message) { <p class="notice notice--error" role="alert">{{ message }}</p> }
+
+      <form [formGroup]="form" (ngSubmit)="save()" novalidate [attr.aria-busy]="saving()">
+        <div class="field">
+          <label for="cat-name">Nombre</label>
+          <input id="cat-name" formControlName="name" maxlength="100" [attr.aria-invalid]="!!errorFor('name')" />
+          @if (errorFor('name'); as message) { <p class="field-error">{{ message }}</p> }
+        </div>
+        <div class="field">
+          <label for="cat-parent">Dentro de</label>
+          <select id="cat-parent" formControlName="parentId" [attr.aria-invalid]="!!errorFor('parentId')">
+            <option [ngValue]="null">— Categoría principal —</option>
+            @for (option of parentOptions(); track option.category.id) {
+              <option [ngValue]="option.category.id">{{ option.path }}</option>
+            }
+          </select>
+          @if (errorFor('parentId'); as message) { <p class="field-error">{{ message }}</p> }
+        </div>
+        <div class="field">
+          <label for="cat-slug">Dirección web (slug) <span class="optional">opcional</span></label>
+          <input id="cat-slug" formControlName="slug" maxlength="100" placeholder="se-genera-del-nombre" [attr.aria-invalid]="!!errorFor('slug')" />
+          @if (errorFor('slug'); as message) { <p class="field-error">{{ message }}</p> }
+        </div>
+        <div class="field">
+          <label for="cat-description">Descripción <span class="optional">opcional</span></label>
+          <textarea id="cat-description" formControlName="description" rows="3" maxlength="500" [attr.aria-invalid]="!!errorFor('description')"></textarea>
+          @if (errorFor('description'); as message) { <p class="field-error">{{ message }}</p> }
+        </div>
+        <div class="field">
+          <span class="field__label">Imagen <span class="optional">opcional</span></span>
+          <div class="image">
+            @if (form.controls.imageUrl.value; as url) {
+              <img [src]="url" alt="" />
+              <button type="button" class="btn btn--secondary btn--sm" (click)="form.controls.imageUrl.setValue('')">Quitar</button>
+            } @else {
+              <label class="btn btn--secondary btn--sm upload">
+                <svg lucideImagePlus [size]="15" aria-hidden="true"></svg>{{ uploading() ? 'Subiendo…' : 'Subir imagen' }}
+                <input #file type="file" accept="image/jpeg,image/png,image/webp" (change)="chooseImage(file)" [disabled]="uploading()" />
+              </label>
+            }
+          </div>
+        </div>
+        <label class="check">
+          <input type="checkbox" formControlName="active" /> Visible en la tienda
+        </label>
+        <div class="editor__actions">
+          <button type="button" class="btn btn--secondary" (click)="close()">Cancelar</button>
+          <button type="submit" class="btn btn--primary" [disabled]="saving() || uploading()" [attr.aria-busy]="saving()">
+            {{ saving() ? 'Guardando…' : editing() === 'new' ? 'Crear categoría' : 'Guardar' }}
+          </button>
+        </div>
+      </form>
+    }
+  </section>
+</div>

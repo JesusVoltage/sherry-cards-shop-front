@@ -12,7 +12,7 @@ import { formatDate, formatEur, STATUS_LABELS } from '../../utils/admin-format';
   selector: 'scw-product-list-page',
   imports: [RouterLink, LucideChevronLeft, LucideChevronRight, LucidePackage, LucidePlus, LucideSearch],
   templateUrl: './product-list-page.component.html',
-  styleUrls: ['../../styles/panel-page.scss', './product-list-page.component.scss']
+  styleUrls: ['../../styles/panel-page.scss', '../../styles/panel-table.scss', './product-list-page.component.scss']
 })
 export class ProductListPageComponent implements OnInit {
   private readonly api = inject(AdminApiService);

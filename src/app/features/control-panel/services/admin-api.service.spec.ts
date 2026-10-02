@@ -29,8 +29,9 @@ describe('AdminApiService', () => {
 
   it('uploads images as multipart form data', () => {
     const result = jasmine.createSpy('result');
-    api.uploadImage(new File(['x'], 'foto.png', { type: 'image/png' })).subscribe(result);
-    const request = http.expectOne(`${base}/media/images`);
+    api.uploadImage(new File(['x'], 'foto.png', { type: 'image/png' }), 'CATEGORIES').subscribe(result);
+    const request = http.expectOne((req) => req.url === `${base}/media/images`);
+    expect(request.request.params.get('folder')).toBe('CATEGORIES');
     expect(request.request.body instanceof FormData).toBeTrue();
     expect((request.request.body as FormData).get('file')).toBeTruthy();
     request.flush({ success: true, data: { id: 1, url: 'https://cdn.test/a.png', contentType: 'image/png', sizeBytes: 1 } });

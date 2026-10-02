@@ -1,0 +1,95 @@
+<header class="page-head">
+  <div>
+    <h1>Usuarios</h1>
+    <p>{{ result()?.totalItems ?? 0 }} {{ result()?.totalItems === 1 ? 'cuenta' : 'cuentas' }}</p>
+  </div>
+  <a class="btn btn--primary" routerLink="/controlpanel/usuarios/nuevo">
+    <svg lucideUserPlus [size]="16" aria-hidden="true"></svg>Nuevo usuario
+  </a>
+</header>
+
+<section class="filters card" aria-label="Filtros">
+  <label class="filters__search">
+    <svg lucideSearch [size]="16" aria-hidden="true"></svg>
+    <span class="visually-hidden">Buscar</span>
+    <input type="search" placeholder="Buscar por nombre, usuario o correo" [value]="filters().search"
+      (input)="search($any($event.target).value)" />
+  </label>
+  <label>
+    <span class="visually-hidden">Rol</span>
+    <select (change)="filterRole($any($event.target).value)">
+      <option value="">Todos los roles</option>
+      @for (role of options()?.roles ?? []; track role.code) {
+        <option [value]="role.code" [selected]="filters().role === role.code">{{ role.name }}</option>
+      }
+    </select>
+  </label>
+  <label>
+    <span class="visually-hidden">Estado</span>
+    <select (change)="filterStatus($any($event.target).value)">
+      <option value="">Todos los estados</option>
+      @for (status of options()?.statuses ?? []; track status.code) {
+        <option [value]="status.code" [selected]="filters().status === status.code">{{ status.name }}</option>
+      }
+    </select>
+  </label>
+</section>
+
+@if (error(); as message) {
+  <div class="card state" role="alert">
+    <p>{{ message }}</p>
+    <button class="btn btn--secondary" type="button" (click)="reload()">Reintentar</button>
+  </div>
+} @else if (result(); as page) {
+  @if (page.items.length === 0) {
+    <div class="card state">
+      <svg lucideUsers [size]="28" aria-hidden="true"></svg>
+      <p>Ninguna cuenta coincide con los filtros.</p>
+    </div>
+  } @else {
+    <div class="table users card" [class.is-loading]="loading()" role="table" aria-label="Usuarios">
+      <div class="table__row table__head" role="row">
+        <span role="columnheader">Usuario</span>
+        <span role="columnheader">Correo</span>
+        <span role="columnheader">Rol</span>
+        <span role="columnheader">Estado</span>
+        <span role="columnheader">Último acceso</span>
+        <span role="columnheader">Alta</span>
+      </div>
+      @for (user of page.items; track user.id) {
+        <a class="table__row" role="row" [routerLink]="['/controlpanel/usuarios', user.id]">
+          <span class="product" role="cell">
+            <span class="avatar" aria-hidden="true">{{ user.nombre.charAt(0).toUpperCase() }}</span>
+            <span class="product__text">
+              <span class="name"><strong>{{ user.nombre }} {{ user.apellidos ?? '' }}</strong>@if (user.id === me()?.id) { <em class="me">Tú</em> }</span>
+              <small>&#64;{{ user.username }}</small>
+            </span>
+          </span>
+          <span role="cell" class="muted ellipsis">{{ user.email }}</span>
+          <span role="cell"><span class="role role--{{ user.role }}">{{ roleLabels[user.role] ?? user.role }}</span></span>
+          <span role="cell"><span class="status status--{{ user.status }}">{{ statusLabels[user.status] ?? user.status }}</span></span>
+          <span role="cell" class="muted">{{ date(user.lastAccessAt) }}</span>
+          <span role="cell" class="muted">{{ date(user.createdAt) }}</span>
+        </a>
+      }
+    </div>
+
+    @if (page.totalPages > 1) {
+      <nav class="pager" aria-label="Páginas">
+        <button class="btn btn--secondary btn--sm" type="button" [disabled]="page.page === 0 || loading()" (click)="goTo(page.page - 1)">
+          <svg lucideChevronLeft [size]="16" aria-hidden="true"></svg>Anterior
+        </button>
+        <span>Página {{ page.page + 1 }} de {{ page.totalPages }}</span>
+        <button class="btn btn--secondary btn--sm" type="button" [disabled]="page.page + 1 >= page.totalPages || loading()" (click)="goTo(page.page + 1)">
+          Siguiente<svg lucideChevronRight [size]="16" aria-hidden="true"></svg>
+        </button>
+      </nav>
+    }
+  }
+} @else {
+  <div class="card" aria-busy="true" aria-label="Cargando usuarios">
+    @for (placeholder of [1, 2, 3, 4]; track placeholder) {
+      <div class="skeleton row-skeleton" aria-hidden="true"></div>
+    }
+  </div>
+}

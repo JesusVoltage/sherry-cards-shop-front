@@ -1,0 +1,127 @@
+<a class="back-link" routerLink="/controlpanel/usuarios"><svg lucideArrowLeft [size]="14" aria-hidden="true"></svg>Usuarios</a>
+
+<header class="page-head">
+  <div>
+    <h1>{{ creating() ? 'Nuevo usuario' : (user()?.nombre ?? 'Editar usuario') }}</h1>
+    <p>{{ creating() ? 'La cuenta podrá iniciar sesión en cuanto la guardes.' : '@' + (user()?.username ?? '') }}</p>
+  </div>
+</header>
+
+@if (loadError(); as message) {
+  <div class="card state" role="alert">
+    <p>{{ message }}</p>
+    <a class="btn btn--secondary" routerLink="/controlpanel/usuarios">Volver a usuarios</a>
+  </div>
+} @else if (loading()) {
+  <div class="card" aria-busy="true" aria-label="Cargando cuenta"><div class="skeleton block-skeleton" aria-hidden="true"></div></div>
+} @else {
+  @if (notice(); as message) { <p class="notice notice--success" role="status">{{ message }}</p> }
+  @if (error(); as message) { <p class="notice notice--error" role="alert">{{ message }}</p> }
+
+  <div class="layout">
+    <form class="card" [formGroup]="form" (ngSubmit)="submit()" novalidate [attr.aria-busy]="saving()">
+      <h2>Datos de la cuenta</h2>
+      <div class="grid">
+        <div class="field">
+          <label for="u-nombre">Nombre</label>
+          <input id="u-nombre" formControlName="nombre" maxlength="100" autocomplete="off" [attr.aria-invalid]="!!errorFor('nombre')" />
+          @if (errorFor('nombre'); as message) { <p class="field-error">{{ message }}</p> }
+        </div>
+        <div class="field">
+          <label for="u-apellidos">Apellidos <span class="optional">opcional</span></label>
+          <input id="u-apellidos" formControlName="apellidos" maxlength="150" autocomplete="off" [attr.aria-invalid]="!!errorFor('apellidos')" />
+          @if (errorFor('apellidos'); as message) { <p class="field-error">{{ message }}</p> }
+        </div>
+        <div class="field">
+          <label for="u-username">Nombre de usuario</label>
+          <input id="u-username" formControlName="username" maxlength="30" autocomplete="off" [attr.aria-invalid]="!!errorFor('username')" />
+          @if (errorFor('username'); as message) { <p class="field-error">{{ message }}</p> }
+        </div>
+        <div class="field">
+          <label for="u-email">Correo electrónico</label>
+          <input id="u-email" type="email" formControlName="email" maxlength="254" autocomplete="off" [attr.aria-invalid]="!!errorFor('email')" />
+          @if (errorFor('email'); as message) { <p class="field-error">{{ message }}</p> }
+        </div>
+        <div class="field">
+          <label for="u-role">Rol</label>
+          <select id="u-role" formControlName="role" [attr.aria-invalid]="!!errorFor('role')">
+            @for (role of options()?.roles ?? []; track role.code) {
+              <option [value]="role.code">{{ role.name }}</option>
+            }
+          </select>
+          @if (errorFor('role'); as message) {
+            <p class="field-error">{{ message }}</p>
+          } @else if (isSelf()) {
+            <p class="field-hint">No puedes cambiar tu propio rol.</p>
+          }
+        </div>
+        <div class="field">
+          <label for="u-status">Estado</label>
+          <select id="u-status" formControlName="status" [attr.aria-invalid]="!!errorFor('status')">
+            @for (status of options()?.statuses ?? []; track status.code) {
+              <option [value]="status.code">{{ status.name }}</option>
+            }
+          </select>
+          @if (errorFor('status'); as message) {
+            <p class="field-error">{{ message }}</p>
+          } @else if (isSelf()) {
+            <p class="field-hint">No puedes bloquear tu propia cuenta.</p>
+          } @else {
+            <p class="field-hint">Una cuenta bloqueada no puede iniciar sesión.</p>
+          }
+        </div>
+        <div class="field span-2">
+          <label for="u-password">
+            {{ creating() ? 'Contraseña' : 'Nueva contraseña' }}
+            @if (!creating()) { <span class="optional">déjala vacía para no cambiarla</span> }
+          </label>
+          <input id="u-password" type="password" formControlName="password" maxlength="128" autocomplete="new-password"
+            [attr.aria-invalid]="!!errorFor('password')" />
+          @if (errorFor('password'); as message) {
+            <p class="field-error">{{ message }}</p>
+          } @else {
+            <p class="field-hint">Mínimo 8 caracteres. Cambiarla, o cambiar el rol, el estado o el correo, cierra sus sesiones abiertas.</p>
+          }
+        </div>
+      </div>
+      <div class="actions">
+        <a class="btn btn--secondary" routerLink="/controlpanel/usuarios">Cancelar</a>
+        <button class="btn btn--primary" type="submit" [disabled]="saving()" [attr.aria-busy]="saving()">
+          {{ saving() ? 'Guardando…' : creating() ? 'Crear usuario' : 'Guardar cambios' }}
+        </button>
+      </div>
+    </form>
+
+    @if (user(); as current) {
+      <aside class="side">
+        <section class="card">
+          <h2>Actividad</h2>
+          <dl class="facts">
+            <dt>Alta</dt><dd>{{ date(current.createdAt) }}</dd>
+            <dt>Último acceso</dt><dd>{{ date(current.lastAccessAt) }}</dd>
+            <dt>Correo verificado</dt><dd>{{ current.emailVerifiedAt ? 'Sí' : 'No' }}</dd>
+            <dt>Acceso con Google</dt><dd>{{ current.googleLinked ? 'Vinculado' : 'No' }}</dd>
+          </dl>
+        </section>
+        @if (!isSelf()) {
+          <section class="card danger-zone">
+            <h2>Borrar</h2>
+            @if (confirmDelete()) {
+              <p>¿Seguro? Se borran también sus direcciones. Si tiene pedidos, bloquéala en su lugar.</p>
+              <div class="danger-zone__actions">
+                <button type="button" class="btn btn--danger btn--sm" (click)="remove()" [disabled]="deleting()" [attr.aria-busy]="deleting()">
+                  {{ deleting() ? 'Borrando…' : 'Sí, borrar' }}
+                </button>
+                <button type="button" class="btn btn--secondary btn--sm" (click)="confirmDelete.set(false)" [disabled]="deleting()">Cancelar</button>
+              </div>
+            } @else {
+              <button type="button" class="btn btn--secondary btn--sm" (click)="confirmDelete.set(true)">
+                <svg lucideTrash2 [size]="14" aria-hidden="true"></svg>Borrar usuario
+              </button>
+            }
+          </section>
+        }
+      </aside>
+    }
+  </div>
+}

@@ -81,6 +81,34 @@ export const routes: Routes = [
 				loadComponent: () => import('./features/control-panel/pages/product-form/product-form-page.component').then(
 					(module) => module.ProductFormPageComponent
 				)
+			},
+			{
+				path: 'categorias',
+				title: 'Categorías · Panel de control',
+				loadComponent: () => import('./features/control-panel/pages/categories/categories-page.component').then(
+					(module) => module.CategoriesPageComponent
+				)
+			},
+			{
+				path: 'usuarios',
+				title: 'Usuarios · Panel de control',
+				loadComponent: () => import('./features/control-panel/pages/user-list/user-list-page.component').then(
+					(module) => module.UserListPageComponent
+				)
+			},
+			{
+				path: 'usuarios/nuevo',
+				title: 'Nuevo usuario · Panel de control',
+				loadComponent: () => import('./features/control-panel/pages/user-form/user-form-page.component').then(
+					(module) => module.UserFormPageComponent
+				)
+			},
+			{
+				path: 'usuarios/:id',
+				title: 'Editar usuario · Panel de control',
+				loadComponent: () => import('./features/control-panel/pages/user-form/user-form-page.component').then(
+					(module) => module.UserFormPageComponent
+				)
 			}
 		]
 	},

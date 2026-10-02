@@ -1,11 +1,14 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { map, Observable, shareReplay } from 'rxjs';
+import { map, Observable, shareReplay, tap } from 'rxjs';
 import { API_BASE_URL } from '../../../core/config/api.config';
 import { ApiResponse } from '../../../core/models/api-response.model';
 import {
-  AdminProduct, AdminProductSummary, CatalogOptions, Dashboard, Page, ProductFilters, ProductRequest, UploadedImage
+  AdminCategory, AdminProduct, AdminProductSummary, AdminUser, AdminUserRequest, CatalogOptions, CategoryRequest,
+  Dashboard, Page, ProductFilters, ProductRequest, UploadedImage, UserFilters, UserOptions
 } from '../models/admin.model';
+
+export type UploadFolder = 'PRODUCTS' | 'CATEGORIES';
 
 /** API del panel de control. Las cookies de sesión las añade authCredentialsInterceptor. */
 @Injectable({ providedIn: 'root' })
@@ -51,10 +54,68 @@ export class AdminApiService {
     return this.optionsRequest;
   }
 
-  uploadImage(file: File): Observable<UploadedImage> {
+  uploadImage(file: File, folder: UploadFolder = 'PRODUCTS'): Observable<UploadedImage> {
     const body = new FormData();
     body.append('file', file);
-    return this.http.post<ApiResponse<UploadedImage>>(`${this.url}/media/images`, body).pipe(map(unwrap));
+    return this.http.post<ApiResponse<UploadedImage>>(`${this.url}/media/images`, body, {
+      params: new HttpParams().set('folder', folder)
+    }).pipe(map(unwrap));
+  }
+
+  categories(): Observable<AdminCategory[]> {
+    return this.http.get<ApiResponse<AdminCategory[]>>(`${this.url}/categories`).pipe(map(unwrap));
+  }
+
+  createCategory(request: CategoryRequest): Observable<AdminCategory> {
+    return this.categoryChange(this.http.post<ApiResponse<AdminCategory>>(`${this.url}/categories`, request).pipe(map(unwrap)));
+  }
+
+  updateCategory(id: number, request: CategoryRequest): Observable<AdminCategory> {
+    return this.categoryChange(this.http.put<ApiResponse<AdminCategory>>(`${this.url}/categories/${id}`, request).pipe(map(unwrap)));
+  }
+
+  /** Devuelve el mensaje de la API, que indica cuántos productos han pasado a "Sin categoría". */
+  deleteCategory(id: number): Observable<string> {
+    return this.categoryChange(this.http.delete<ApiResponse<number>>(`${this.url}/categories/${id}`)
+      .pipe(map((response) => response.message)));
+  }
+
+  reorderCategories(parentId: number | null, categoryIds: number[]): Observable<AdminCategory[]> {
+    return this.categoryChange(this.http.put<ApiResponse<AdminCategory[]>>(`${this.url}/categories/order`, { parentId, categoryIds })
+      .pipe(map(unwrap)));
+  }
+
+  users(filters: UserFilters, size = 20): Observable<Page<AdminUser>> {
+    let params = new HttpParams().set('page', filters.page).set('size', size);
+    if (filters.search.trim()) params = params.set('search', filters.search.trim());
+    if (filters.role) params = params.set('role', filters.role);
+    if (filters.status) params = params.set('status', filters.status);
+    return this.http.get<ApiResponse<Page<AdminUser>>>(`${this.url}/users`, { params }).pipe(map(unwrap));
+  }
+
+  user(id: number): Observable<AdminUser> {
+    return this.http.get<ApiResponse<AdminUser>>(`${this.url}/users/${id}`).pipe(map(unwrap));
+  }
+
+  userOptions(): Observable<UserOptions> {
+    return this.http.get<ApiResponse<UserOptions>>(`${this.url}/users/options`).pipe(map(unwrap));
+  }
+
+  createUser(request: AdminUserRequest): Observable<AdminUser> {
+    return this.http.post<ApiResponse<AdminUser>>(`${this.url}/users`, request).pipe(map(unwrap));
+  }
+
+  updateUser(id: number, request: AdminUserRequest): Observable<AdminUser> {
+    return this.http.put<ApiResponse<AdminUser>>(`${this.url}/users/${id}`, request).pipe(map(unwrap));
+  }
+
+  deleteUser(id: number): Observable<void> {
+    return this.http.delete<ApiResponse<null>>(`${this.url}/users/${id}`).pipe(map(() => undefined));
+  }
+
+  /** Tras cambiar categorías, el desplegable del formulario de producto tiene que volver a pedirse. */
+  private categoryChange<T>(request: Observable<T>): Observable<T> {
+    return request.pipe(tap(() => { this.optionsRequest = undefined; }));
   }
 }
 
